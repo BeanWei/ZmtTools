@@ -19,8 +19,8 @@ func main() {
 		log.Fatal("Line_20-Error:", err)
 	}
 
-	w.LoadFile("./static/html/index.html")
-	//w.LoadFile("./static/html/upload.html")
+	//w.LoadFile("./static/html/index.html")
+	w.LoadFile("./static/html/upload.html")
 	w.SetTitle("登录")
 	w.Show()
 	w.Run()
