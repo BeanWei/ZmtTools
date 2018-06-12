@@ -1,0 +1,12 @@
+.idea
+.DS_Store
+src/.DS_Store
+src/.cache
+src/node_modules
+output
+vendor_astilectron_bundler
+bind_darwin_amd64.go
+bind_windows_amd64.go
+bind_linux_amd64.go
+starsManagerRepo
+windows.syso

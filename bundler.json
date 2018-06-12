@@ -1,0 +1,22 @@
+{
+    "app_name": "ZmtTools",
+    "icon_path_darwin": "src/dist/icon.icns",
+    "icon_path_linux": "src/dist/icon.png",
+    "icon_path_windows": "src/dist/icon.ico",
+    "output_path": "output",
+    "resources_path": "src/dist",
+    "cache_path": "cache_astilectron_bundler",
+    "environments": [
+        {"arch": "amd64", "os": "darwin"},
+        {"arch": "amd64", "os": "linux"},
+        {
+            "arch": "amd64",
+            "os": "windows",
+            "env": {
+                "CC": "x86_64-w64-mingw32-gcc",
+                "CXX": "x86_64-w64-mingw32-g++",
+                "CGO_ENABLED": "1"
+            }
+        }
+    ]
+  }
