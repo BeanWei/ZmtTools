@@ -8,6 +8,7 @@ const Main = () => import('../components/Main')
 const Login = () => import('../components/Login')
 const Upload = () => import('../components/Upload')
 const Allspider = () => import('../components/Allspider')
+const IDspider = () => import('../components/IDspider')
 
 Vue.use(Router)
 
@@ -19,19 +20,28 @@ export default new Router({
     },
     {
       path: '/login',
+      name: 'Login',
       component: Login
     },
     {
       path: '/main',
+      name: 'Main',
       component: Main,
       children:[
         {
           path:'upload/',
+          name: 'Upload',
           component: Upload
         },
         {
           path:'allspider/',
+          name: 'Allspider',
           component: Allspider
+        },
+        {
+          path:'idspider/',
+          name: 'IDspider',
+          component: IDspider
         }
       ]
     }

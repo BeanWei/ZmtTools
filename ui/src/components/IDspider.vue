@@ -1,21 +1,88 @@
 <template>
   <v-card>
-    <v-card-title>
-      <h1>获取选择领域下各平台的数据源</h1>
-      <v-spacer></v-spacer>
-      <v-flex xs6>
-        <v-select
-          :items="items"
-          v-model="e2"
-          label="选择领域"
-          class="input-group--focused"
-          item-value="text"
-        ></v-select>
-      </v-flex>
-      <v-btn fab dark small color="cyan">
-        <v-icon dark>search</v-icon>
-      </v-btn>
-    </v-card-title>
+    <v-card-text>
+      <v-container fluid>
+        <v-layout row wrap style="margin-top: -40px;">
+          <v-flex xs12 style="height: 50px;">
+            <v-radio-group v-model="sites" row>
+              <v-radio
+                v-for="(site, i) in ['大鱼号', '百家号', '企鹅号', '头条号']"
+                :key="i"
+                :value="site"
+                :label="site"
+                :color="success"
+              ></v-radio>
+            </v-radio-group>
+          </v-flex>
+          <v-btn
+            color="teal"
+            class="white--text"
+            style="margin-top: 17px; margin-right: 26px;"
+            @click.native="loader = 'loading3'"
+          >
+            解析ID
+            <v-icon right dark>adb</v-icon>
+          </v-btn>
+          <v-flex xs12 sm4>
+            <v-text-field
+              v-model="authorID"
+              :rules="IDRules"
+              label="ID"
+              required
+            ></v-text-field>
+          </v-flex>
+          <v-flex xs12 sm6 md3>
+            <v-dialog
+              ref="dialog"
+              v-model="modal"
+              :return-value.sync="date"
+              persistent
+              lazy
+              full-width
+              width="290px"
+            >
+              <v-text-field
+                slot="activator"
+                v-model="datefrom"
+                label="选择起始时间段"
+                prepend-icon="event"
+                readonly
+              ></v-text-field>
+              <v-date-picker v-model="datefrom" scrollable>
+                <v-spacer></v-spacer>
+                <v-btn flat color="primary" @click="modal = false">Cancel</v-btn>
+                <v-btn flat color="primary" @click="$refs.dialog.save(datefrom)">OK</v-btn>
+              </v-date-picker>
+            </v-dialog>
+          </v-flex>
+          <v-flex xs12 sm6 md3>
+            <v-dialog
+              ref="dialog"
+              v-model="modal"
+              :return-value.sync="date"
+              persistent
+              lazy
+              full-width
+              width="290px"
+            >
+              <v-text-field
+                slot="activator"
+                v-model="dateto"
+                label="选择终止时间段"
+                prepend-icon="event"
+                readonly
+              ></v-text-field>
+              <v-date-picker v-model="dateto" scrollable>
+                <v-spacer></v-spacer>
+                <v-btn flat color="primary" @click="modal = false">Cancel</v-btn>
+                <v-btn flat color="primary" @click="$refs.dialog.save(dateto)">OK</v-btn>
+              </v-date-picker>
+            </v-dialog>
+          </v-flex>
+        </v-layout>
+      </v-container>
+      <v-btn block color="primary" dark style="margin-top: -10px;">开始抓取</v-btn>
+    </v-card-text>
     <v-data-table
       :headers="headers"
       :items="desserts"
@@ -39,13 +106,15 @@
   export default {
     data () {
       return {
-        items:[
-          { text: "科技" },
-          { text: "娱乐" },
-          { text: "搞笑" },
-          { text: "财经" },
-          { text: "游戏" },
+        valid: false,
+        authorID: '',
+        IDRules: [
+          v => !!v || '请输入作者ID',
+          v => v.length <= 10 || 'Name must be less than 10 characters'
         ],
+        datefrom: null,
+        dateto: null,
+        modal: false,
         headers: [
           {
             text: 'Dessert (100g serving)',

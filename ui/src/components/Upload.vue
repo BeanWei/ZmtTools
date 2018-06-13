@@ -4,7 +4,7 @@
     style="max-width: 100%; margin: auto; height: 100%;"
     class="grey lighten-3"
   >
-    <v-card>
+    <v-card >
       <v-contatiner fluid grid-list-lg style="min-height: 0;">
         <v-layout row wrap>
           <v-flex xs12 sm1>
@@ -12,9 +12,9 @@
             <v-btn
               :loading="loading3"
               :disabled="loading3"
-              color="blue-grey"
+              color="teal"
               class="white--text"
-              style="margin-top: 20px;"
+              style="margin-top: 17px;"
               @click.native="loader = 'loading3'"
             >
               选择文件
@@ -47,23 +47,25 @@
           </v-flex>
         </v-layout>
       </v-contatiner>
-      <v-btn
+    </v-card>
+    <div :is="comm.component" v-for="comm in comms"></div>
+    <v-footer class="pa-3" style="margin-top: 50px; bottom: 0px;" height="auto">
+      <v-card flat tile class="flex">
+        <v-btn
           absolute
           dark
           fab
           small
-          bottom
+          top
           right
           color="pink"
+          @click="add('uploadcomponent')"
           >
           <v-icon>add</v-icon>
       </v-btn>
-    </v-card>
-    <v-footer class="pa-3" style="margin-top: 50px;" height="auto">
-      <v-card flat tile class="flex">
         <v-container fluid grid-list-md>
           <v-layout row wrap>
-            <v-btn color="info" class="white--text">
+            <v-btn color="info" class="white--text" style="margin-top: 17px;">
               添加账号
               <v-icon right dark>person_add</v-icon>
             </v-btn>
@@ -81,6 +83,7 @@
             <v-btn
                 color="success"
                 class="white--text"
+                style="margin-top: 17px; margin-left: 260px;"
             >
               批量上传
               <v-icon right dark>cloud_done</v-icon>
@@ -95,8 +98,12 @@
   </div>
 </template>
 <script>
+import UploadComponent from './uploadcomm'
 export default {
   name: "Upload",
+  components: {
+    'uploadcomponent': UploadComponent,
+  },
   data() {
     return {
       items:[
@@ -110,7 +117,15 @@ export default {
         { text: "测试账号一" },
         { text: "测试账号二" },
         { text: "测试账号三" },
-      ]
+      ],
+      comms: [],
+    }
+  },
+  methods: {
+    add(component) {
+      this.comms.push({
+        'component': component,
+      })
     }
   }
 }

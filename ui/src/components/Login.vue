@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-jumbotron class="grey lighten-2" height="100%">
+    <v-jumbotron class="teal lighten-4" height="100%">
       <v-container fill-height>
         <v-layout align-center justify-center>
           <v-flex>
