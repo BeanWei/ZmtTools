@@ -63,6 +63,10 @@
       <v-card flat tile class="flex">
         <v-container fluid grid-list-md>
           <v-layout row wrap>
+            <v-btn color="info" class="white--text">
+              添加账号
+              <v-icon right dark>person_add</v-icon>
+            </v-btn>
             <v-flex xs12 md5>
               <v-select
                 :items="accounts"
@@ -81,14 +85,10 @@
               批量上传
               <v-icon right dark>cloud_done</v-icon>
             </v-btn>
-            <v-btn color="info" class="white--text">
-              添加账号
-              <v-icon right dark>person_add</v-icon>
-            </v-btn>
           </v-layout>
         </v-container>
         <v-card-actions class="grey lighten-2 justify-center">
-          &copy; {{ new Date().getFullYear() }} — <strong>ZmtTools</strong>
+          <strong>首次使用需点击添加账号按钮来添加自己的自媒体账号，只需要添加Cookie即可，请放心食用</strong>
         </v-card-actions>
       </v-card>
     </v-footer>

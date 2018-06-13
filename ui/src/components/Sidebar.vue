@@ -21,12 +21,12 @@
           <v-icon>add</v-icon>
         </v-btn>
         <v-list dense class="pt-0">
-          <v-list-tile v-for="item in items" :key="item.title" @click="">
+          <v-list-tile v-for="item in items" :key="item.title">
             <v-list-tile-action>
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
-              <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+              <v-list-tile-title><router-link :to="{name: item.route}">{{ item.title }}</router-link></v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
         </v-list>
@@ -59,13 +59,13 @@ export default {
         marginLeft: '-200px'
       },
       items: [
-        { title: '主页', icon: 'dashboard' },
-        { title: '批量上传', icon: 'question_answer' },
+        { title: '主页', icon: 'dashboard', route: 'login' },
+        { title: '批量上传', icon: 'question_answer', route: 'main/upload' },
         { title: '定向获取', icon: 'dashboard' },
-        { title: '资源采集', icon: 'dashboard' },
+        { title: '资源采集', icon: 'dashboard', route: 'main/allspider' },
         { title: '伪原创', icon: 'dashboard' },
         { title: '今日最热', icon: 'dashboard' },
-        { title: '关于', icon: 'dashboard' }
+        { title: '关于', icon: 'dashboard', route: '/' }
       ],
     }
   },

@@ -7,6 +7,7 @@ const Index = () => import('../components/Index')
 const Main = () => import('../components/Main')
 const Login = () => import('../components/Login')
 const Upload = () => import('../components/Upload')
+const Allspider = () => import('../components/Allspider')
 
 Vue.use(Router)
 
@@ -27,6 +28,10 @@ export default new Router({
         {
           path:'upload/',
           component: Upload
+        },
+        {
+          path:'allspider/',
+          component: Allspider
         }
       ]
     }
