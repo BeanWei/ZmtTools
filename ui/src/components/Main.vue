@@ -3,10 +3,10 @@
     <v-progress-linear class="ma-0"></v-progress-linear>
     <template>
       <side-bar :drawer.sync="drawer"></side-bar>
-      <v-toolbar app color="blue-grey" dark flat>
-        <v-toolbar-side-icon>
+      <v-toolbar app color="blue-grey" dark flat height="35px">
+        <!-- <v-toolbar-side-icon>
           <v-icon>arrow_back</v-icon>
-        </v-toolbar-side-icon>
+        </v-toolbar-side-icon> -->
         <v-toolbar-title></v-toolbar-title>
         <v-spacer></v-spacer>
         <v-tooltip left>

@@ -5,7 +5,7 @@
         <v-list two-line>
           <v-list-tile avatar>
             <v-list-tile-avatar size=60 color="black">
-              <img :src="user.avatar" />
+              <img :src="useravatar" />
             </v-list-tile-avatar>
           </v-list-tile>
           <v-list-tile>
@@ -36,7 +36,7 @@
 </template>
 <script>
 import sideBarHeaderIcon from '../assets/sidebarheader.jpg'
-// import { mapState, mapActions } from 'vuex'
+import useravatar from '../assets/icon.png'
 export default {
   name: 'Sidebar',
   props: {
@@ -49,6 +49,7 @@ export default {
   data() {
     return {
       sideBarHeaderIcon,
+      useravatar,
       alertStyle: {
         position: 'fixed',
         'z-index': 100,
