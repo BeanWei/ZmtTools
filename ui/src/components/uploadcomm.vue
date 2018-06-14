@@ -20,25 +20,25 @@
             <v-text-field
             name="title"
             label="标题"
-            ref="title"
+            v-bind:value="part.title"
             ></v-text-field>
         </v-flex>
         <v-flex xs12 sm3 style="margin-right: 7px;">
             <v-text-field
             name="describe"
             label="简介"
-            ref="describe"
+            v-bind:value="part.describe"
             ></v-text-field>
         </v-flex>
         <v-flex xs12 sm3 style="margin-right: 7px;">
             <v-text-field
             name="tags"
             label="标签(逗号隔开)"
-            ref="tags"
+            v-bind:value="part.tags"
             ></v-text-field>
         </v-flex>
         <v-flex xs12 sm1>
-            <v-select :items="items" ref="field" label="领域"></v-select>
+            <v-select :items="items" v-bind:value="part.field" label="领域"></v-select>
         </v-flex>
       </v-layout>
     </v-contatiner>
@@ -46,12 +46,6 @@
 </template>
 
 <script>
-// var info = {
-//   "title": "",
-//   "describe": "",
-//   "tags": "",
-//   "field": ""
-// }
 export default {
   data() {
     return {
@@ -62,8 +56,8 @@ export default {
         { text: "财经" },
         { text: "游戏" },
       ],
-      // info : {"title": title, "describe": describe, "tags": tags, "field": field},
-      // props: ['info'],
+      part: {},
+      props: ['part']
     }
   }
 }
