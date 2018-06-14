@@ -4,7 +4,6 @@
     style="max-width: 100%; margin: auto; height: 100%;"
     class="grey lighten-3"
   >
-    <Upload-Component></Upload-Component>
     <div :is="comm.component" v-for="comm in comms"></div>
     <v-footer class="pa-3" style="margin-top: 50px; bottom: 0px;" height="auto">
       <v-card flat tile class="flex">
@@ -72,6 +71,9 @@ export default {
         { text: "测试账号三" },
       ],
     }
+  },
+  mounted() {
+    this.add('uploadcomponent')
   },
   methods: {
     add(component) {
