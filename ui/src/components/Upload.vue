@@ -5,7 +5,7 @@
     class="grey lighten-3"
   >
     <uploadComponent ref="uploadComponent"></uploadComponent>
-    <div :is="comm.component" v-for="comm in comms" ref="UploadComponent"></div>
+    <div :is="comm.component" v-for="comm in comms" ref="uploadComponent"></div>
     <v-footer class="pa-3" style="margin-top: 50px; bottom: 0px;" height="auto">
       <v-card flat tile class="flex">
         <v-btn
@@ -54,14 +54,14 @@
     </v-footer>
   </div>
 </template>
+
 <script>
-import UploadComponent from './uploadcomm'
 import uploadComponent from './uploadcomm'
 var data = ''
 export default {
   name: "Upload",
   components: {
-    'uploadcomponent': UploadComponent,
+    'uploadcomponent': uploadComponent,
     uploadComponent,
   },
   data() {
