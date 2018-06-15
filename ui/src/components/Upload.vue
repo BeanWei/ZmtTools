@@ -4,7 +4,8 @@
     style="max-width: 100%; margin: auto; height: 100%;"
     class="grey lighten-3"
   >
-    <div :is="comm.component" v-for="comm in comms" v-bind="videoinfo"></div>
+    <uploadComponent ref="uploadComponent"></uploadComponent>
+    <div :is="comm.component" v-for="comm in comms" ref="UploadComponent"></div>
     <v-footer class="pa-3" style="margin-top: 50px; bottom: 0px;" height="auto">
       <v-card flat tile class="flex">
         <v-btn
@@ -28,7 +29,6 @@
             <v-flex xs12 md5>
               <v-select
                 :items="accounts"
-                v-model="e1"
                 label="请选择对应平台的账号"
                 single-line
                 auto
@@ -56,15 +56,17 @@
 </template>
 <script>
 import UploadComponent from './uploadcomm'
+import uploadComponent from './uploadcomm'
+var data = ''
 export default {
   name: "Upload",
   components: {
     'uploadcomponent': UploadComponent,
+    uploadComponent,
   },
   data() {
     return {
       comms: [],
-      videoinfo: '',
       accounts: [
         { text: "测试账号一" },
         { text: "测试账号二" },
@@ -82,7 +84,8 @@ export default {
       })
     },
     publish() {
-      console.log(this.videoinfo)
+      data = this.$refs.uploadComponent.video
+      console.log(data.title, data.describe, data.tags, data.field.text)
     }
   }
 }

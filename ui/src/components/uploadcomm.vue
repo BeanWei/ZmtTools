@@ -1,12 +1,10 @@
 <template>
   <v-card style="margin-top: 12px;">
-    <v-contatiner fluid grid-list-lg style="min-height: 0;">
+    <v-form ref="video" :model="video"> 
       <v-layout row wrap>
         <v-flex xs12 sm1>
             <!-- <input type="file"> -->
           <v-btn
-            :loading="loading3"
-            :disabled="loading3"
             color="teal"
             class="white--text"
             style="margin-top: 17px;"
@@ -20,28 +18,28 @@
             <v-text-field
             name="title"
             label="标题"
-            v-bind:value="part.title"
+            v-model="video.title"
             ></v-text-field>
         </v-flex>
         <v-flex xs12 sm3 style="margin-right: 7px;">
             <v-text-field
             name="describe"
             label="简介"
-            v-bind:value="part.describe"
+            v-model="video.describe"
             ></v-text-field>
         </v-flex>
         <v-flex xs12 sm3 style="margin-right: 7px;">
             <v-text-field
             name="tags"
             label="标签(逗号隔开)"
-            v-bind:value="part.tags"
+            v-model="video.tags"
             ></v-text-field>
         </v-flex>
         <v-flex xs12 sm1>
-            <v-select :items="items" v-bind:value="part.field" label="领域"></v-select>
+            <v-select :items="items" v-model="video.field" label="领域"></v-select>
         </v-flex>
       </v-layout>
-    </v-contatiner>
+    </v-form>
   </v-card>
 </template>
 
@@ -56,8 +54,12 @@ export default {
         { text: "财经" },
         { text: "游戏" },
       ],
-      part: {},
-      props: ['part']
+      video: {
+        title: "",
+        describe: "",
+        tags: "",
+        field: ""
+      }
     }
   }
 }
