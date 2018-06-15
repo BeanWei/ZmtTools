@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import axios from 'axios'
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
@@ -8,6 +9,9 @@ import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import 'iview/dist/styles/iview.css'
 
 Vue.use(Vuetify)
+
+axios.defaults.withCredentials = true
+Vue.prototype.$axios = axios
 
 import { Row, Col, Icon, Card } from 'iview'
 Vue.component('Row', Row)

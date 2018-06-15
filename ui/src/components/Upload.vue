@@ -23,10 +23,67 @@
       </v-btn>
         <v-container fluid grid-list-md>
           <v-layout row wrap>
-            <v-btn color="info" class="white--text" style="margin-top: 17px;">
+            <v-btn 
+              color="info" 
+              class="white--text" 
+              style="margin-top: 17px;"
+              @click.native.stop="adduser = true"
+            >
               添加账号
               <v-icon right dark>person_add</v-icon>
             </v-btn>
+            <v-dialog v-model="adduser" max-width="600">
+              <v-layout justify-center>
+                <v-flex>
+                  <v-card color="grey lighten-4" flat>
+                    <v-card-text>
+                      <v-subheader>添加账号(请通过浏览器获取自己账号的Cookie)</v-subheader>
+                      <v-container fluid>
+                        <v-layout row>
+                          <v-flex xs12>
+                            <v-text-field
+                              v-model="cookie"
+                              label="将Cookie完整的粘贴在此处,验证OK之后选择保存以便下次使用"
+                              textarea
+                              :rules="[() => cookie.length > 0 || '请填入Cookie']"
+                              required
+                            ></v-text-field>
+                          </v-flex>
+                        </v-layout>
+                      </v-container>
+                    </v-card-text>
+                    <v-card-text>
+                      <v-select
+                        :rules="[() => !!site || '请选择账号对应的平台']"
+                        :items="sites"
+                        v-model="site"
+                        autocomplete
+                        label="平台"
+                        placeholder="Select..."
+                        required
+                      ></v-select>
+                    </v-card-text>
+                    <v-divider class="mt-5"></v-divider>
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="blue darken-1" flat @click.native="adduser = false">取消</v-btn>
+                        <v-btn color="blue darken-1" flat @click.native="okcookie = (cookie.length > 0 && !!site)">验证</v-btn>
+                          <v-dialog v-model="okcookie" max-width="290">
+                            <v-card>
+                              <v-card-title class="headline">验证成功，保存账号?</v-card-title>
+                              <v-card-text>您的账号为: XXXXXXXXX.</v-card-text>
+                              <v-card-actions>
+                                <v-spacer></v-spacer>
+                                <v-btn color="green darken-1" flat="flat" @click.native="okcookie = false">取消</v-btn>
+                                <v-btn color="green darken-1" flat="flat" @click="savecookie">保存</v-btn>
+                              </v-card-actions>
+                            </v-card>
+                          </v-dialog>
+                      </v-card-actions>
+                  </v-card>
+                </v-flex>
+              </v-layout>
+            </v-dialog>
             <v-flex xs12 md5>
               <v-select
                 :items="accounts"
@@ -72,6 +129,16 @@ export default {
         { text: "测试账号二" },
         { text: "测试账号三" },
       ],
+      sites: [
+        { text: "大鱼号" },
+        { text: "百家号" },
+        { text: "企鹅号" },
+        { text: "头条号" },
+      ],
+      okcookie: false,
+      adduser: false,
+      cookie: '',
+      site: '',
     }
   },
   methods: {
