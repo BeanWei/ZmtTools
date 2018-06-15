@@ -4,8 +4,11 @@
     style="max-width: 100%; margin: auto; height: 100%;"
     class="grey lighten-3"
   >
-    <uploadComponent ref="uploadComponent"></uploadComponent>
-    <div :is="comm.component" v-for="comm in comms" ref="uploadComponent"></div>
+    <!-- <uploadComponent ref="uploadComponent"></uploadComponent> -->
+    <div v-for="cmpt in total">
+      <uploadComponent ref="uploadComponent"></uploadComponent>
+    </div>
+    <!-- <div :is="comm.component" v-for="comm in comms" ref="comm.component"></div> -->
     <v-footer class="pa-3" style="margin-top: 50px; bottom: 0px;" height="auto">
       <v-card flat tile class="flex">
         <v-btn
@@ -16,7 +19,7 @@
           top
           right
           color="pink"
-          @click="add('uploadcomponent')"
+          @click="add()"
           >
           <v-icon>add</v-icon>
       </v-btn>
@@ -61,12 +64,12 @@ var data = ''
 export default {
   name: "Upload",
   components: {
-    'uploadcomponent': uploadComponent,
     uploadComponent,
   },
   data() {
     return {
       comms: [],
+      total: 1,
       accounts: [
         { text: "测试账号一" },
         { text: "测试账号二" },
@@ -74,18 +77,32 @@ export default {
       ],
     }
   },
-  mounted() {
-    this.add('uploadcomponent')
-  },
+  // mounted() {
+  //   this.add('uploadcomponent')
+  // },
   methods: {
-    add(component) {
-      this.comms.push({
-        'component': component,
-      })
+    // add(component) {
+    //   this.comms.push({
+    //     'component': component,
+    //   })
+    // },
+    add() {
+      this.total ++ 
     },
     publish() {
-      data = this.$refs.uploadComponent.video
-      console.log(data.title, data.describe, data.tags, data.field.text)
+      var allvideo = [];
+      for (var index = 0; index <= this.total; index++) {
+        var videoinfo = {};
+        data = this.$refs.uploadComponent[index].video
+        videoinfo = {
+          "title": data.title,
+          "describe": data.describe,
+          "tags": data.tags,
+          "field": data.field.text
+        }
+        allvideo.push(videoinfo)
+      }
+      console.log(allvideo)
     }
   }
 }
