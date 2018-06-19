@@ -1,27 +1,66 @@
 package main
 
 import (
-	"log"
+	"flag"
+  "github.com/asticode/go-astilectron"
+  "github.com/ZEROKISEKI/go-astilectron-bootstrap"
+  "github.com/asticode/go-astilog"
+  "github.com/pkg/errors"
+  "os"
+  "path/filepath"
+  "log"
+  "runtime"
+  "path"
+)
 
-	"github.com/sciter-sdk/go-sciter"
-	"github.com/sciter-sdk/go-sciter/window"
+var (
+	AppName string
+	BuiltAt string
+	debug = flag.Bool("d", true, "enables the debug mode")
+	w *astilectron.Window
 )
 
 func main() {
-	w, err := window.New(
-		sciter.SW_TITLEBAR|
-			sciter.SW_RESIZEABLE|
-			sciter.SW_CONTROLS|
-			sciter.SW_MAIN|
-			sciter.SW_ENABLE_DEBUG,
-		nil)
-	if err != nil {
-		log.Fatal("Line_20-Error:", err)
-	}
 
-	//w.LoadFile("./static/html/index.html")
-	w.LoadFile("./static/html/upload.html")
-	w.SetTitle("登录")
-	w.Show()
-	w.Run()
+	flag.Parse()
+	astilog.FlagInit()
+
+	if p, err := os.Executable(); err != nil {
+    err = errors.Wrap(err, "os.Executable failed")
+    return
+  } else {
+    p = filepath.Dir(p)
+    log.Print(p)
+  }
+
+	astilog.Debugf("Running app built at %s", BuiltAt)
+
+  if err := bootstrap.Run(bootstrap.Options{
+    Asset: Asset,
+    AstilectronOptions: astilectron.Options{
+      AppName:            AppName,
+      AppIconDarwinPath:  "ui/dist/icon.icns",
+      AppIconDefaultPath: "ui/dist/icon.png",
+    },
+    Debug:    *debug,
+    ResourcesPath: "ui/dist",
+    Homepage: "index.html",
+    OnWait: func(_ *astilectron.Astilectron, iw *astilectron.Window, _ *astilectron.Menu, _ *astilectron.Tray, _ *astilectron.Menu) error {
+      w = iw
+      //go checkAPI()
+      return nil
+    },
+    MessageHandler: handleMessages,
+    RestoreAssets:  RestoreAssets,
+    WindowOptions: &astilectron.WindowOptions{
+      BackgroundColor: astilectron.PtrStr("#fff"),
+      Center:          astilectron.PtrBool(true),
+      Height:          astilectron.PtrInt(760),
+      Width:           astilectron.PtrInt(1350),
+      MinWidth:        astilectron.PtrInt(1050),
+    },
+  }); err != nil {
+    astilog.Fatal(errors.Wrap(err, "running bootstrap failed"))
+  }
+
 }
