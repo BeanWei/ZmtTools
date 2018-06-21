@@ -8,7 +8,6 @@ import (
 
 	"github.com/ZEROKISEKI/go-astilectron-bootstrap"
 	"github.com/asticode/go-astilectron"
-	_ "github.com/asticode/go-astilectron-bootstrap"
 	"github.com/asticode/go-astilog"
 	"github.com/pkg/errors"
 )
