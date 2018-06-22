@@ -3,7 +3,6 @@ import Router from 'vue-router'
 // 全加载
 // import Index from '../components/Index'
 // 懒加载
-const Index = () => import('../components/Index')
 const Main = () => import('../components/Main')
 const Login = () => import('../components/Login')
 const Upload = () => import('../components/Upload')
@@ -16,7 +15,7 @@ export default new Router({
   routes: [
     {
       path: '/',
-      component: Index
+      component: Login
     },
     {
       path: '/login',

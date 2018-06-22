@@ -1,55 +1,21 @@
-# parcel-vue
-零配置VUE开发模板，基于Parcel全新构建
+# ui
 
-[传送门：Parcel-VUE官网文档](http://parcel.xserver.top)
+> A Vue.js project
 
-> 使用说明
+## Build Setup
 
-```bash
-请使用Node版本 >= 9.10
+``` bash
+# install dependencies
+npm install
+
+# serve with hot reload at localhost:8080
+npm run dev
+
+# build for production with minification
+npm run build
+
+# build for production and view the bundle analyzer report
+npm run build --report
 ```
 
-```bash
-$ npm install xserver-cli -g
-
-$ x-cli parcel-vue myproject
-```
-
-> 开发调试
-```bash
-$ npm run dev
-```
-
-> 正式构建
-```bash
-$ npm run build
-```
-
->目录结构
-```js
-├── dist                构建结果
-├── index.html          首页文件
-├── node_modules
-├── package.json
-├── src                 开发源码
-│   ├── App.vue
-│   ├── assets
-│   ├── components
-│   ├── main.js
-│   └── router
-└── static              静态文件
-    ├── css
-    ├── img
-    └── js
-```
-
-更新日志
->
-	2018.01.28:更新iview至2.9.0版本
-	2018.03.31:更新pacel至1.7.0版本，原生支持VUE构建，进一步精简配置，完全零配置
-
-帮助联系
->
-	作者:cheneyxu
-	邮箱:457299596@qq.com
-	QQ:457299596
+For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
