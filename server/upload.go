@@ -36,8 +36,8 @@ func main() {
 	f := e.Clone()
 	g := f.Clone()
 	h := g.Clone()
-	i := g.Clone()
-	j := g.Clone()
+	i := h.Clone()
+	j := i.Clone()
 
 	body_buf := bytes.NewBufferString("")
 	body_writer := multipart.NewWriter(body_buf)
