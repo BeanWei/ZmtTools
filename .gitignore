@@ -1,12 +1,12 @@
 .idea
 .DS_Store
-src/.DS_Store
-src/dist
+ui/.DS_Store
+ui/dist
 !src/dist/icon.icns
 !src/dist/icon.ico
 !src/dist/icon.png
-src/.cache
-src/node_modules
+ui/.cache
+ui/node_modules
 output
 vendor_astilectron_bundler
 bind_darwin_amd64.go
