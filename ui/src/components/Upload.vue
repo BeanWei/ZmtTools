@@ -159,8 +159,8 @@ export default {
         allvideo.push(videoinfo)
       }
       astilectron.sendMessage({
-        "name": "Upload",
-        "playload": allvideo
+        name: "Upload",
+        payload: allvideo
       },function(message){})
     }
   }

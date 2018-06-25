@@ -1,9 +1,11 @@
 package main
 
 import (
+	
 	"encoding/json"
 	"log"
 
+	"github.com/asticode/go-astilog"
 	"github.com/ZEROKISEKI/go-astilectron-bootstrap"
 	"github.com/asticode/go-astilectron"
 )
@@ -14,7 +16,7 @@ func handleMessages(a *astilectron.Astilectron, _ *astilectron.Window, m bootstr
 	case "Upload":
 		{
 			// UploadInfo 视频上传信息接口
-			var UploadInfo struct {
+			var UploadInfo []struct {
 				Title    string `json:"title"`
 				Describe string `json:"describe"`
 				Tags     string `json:"tags"`
@@ -25,7 +27,8 @@ func handleMessages(a *astilectron.Astilectron, _ *astilectron.Window, m bootstr
 			if err != nil {
 				return err.Error(), nil
 			}
-			log.Println(UploadInfo)
+			log.Println("test")
+			astilog.Debug(UploadInfo)
 		}
 	}
 	return
