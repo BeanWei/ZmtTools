@@ -14,15 +14,11 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
 # 热搜实时监控
   * 搜狗: http://top.sogou.com/hot/shishi_1.html
+
+
+
+# 十万爆文(乐观号)
+  * http://www.myleguan.com/lgEditor/lgEditor.html#/ESArticle
+
