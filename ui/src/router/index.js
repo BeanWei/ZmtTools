@@ -8,6 +8,7 @@ const Login = () => import('../components/Login')
 const Upload = () => import('../components/Upload')
 const Allspider = () => import('../components/Allspider')
 const IDspider = () => import('../components/IDspider')
+const Baowen  = () => import('../components/Baowen.vue')
 
 Vue.use(Router)
 
@@ -41,6 +42,11 @@ export default new Router({
           path:'idspider/',
           name: 'IDspider',
           component: IDspider
+        },
+        {
+          path:'baowen/',
+          name: 'Baowen',
+          component: Baowen
         }
       ]
     }

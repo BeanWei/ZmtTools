@@ -60,6 +60,7 @@ export default {
       },
       items: [
         { title: '主页', icon: 'dashboard', itemVue: 'Main' },
+        { title: '十万爆文', icon: 'dashboard', itemVue: 'Baowen' },
         { title: '批量上传', icon: 'question_answer', itemVue: 'Upload' },
         { title: '定向获取', icon: 'dashboard', itemVue: 'IDspider' },
         { title: '资源采集', icon: 'dashboard', itemVue: 'Allspider' },
