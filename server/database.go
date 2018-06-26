@@ -60,3 +60,55 @@ func newsadd(db *sql.DB, field string, title string, author string, authorid str
 	return nil
 
 }
+
+// Newsinfo 结构体
+type Newsinfo struct {
+	field       string
+	title       string
+	author      string
+	authorid    string
+	publishtime string
+	views       int
+	comments    int
+	url         string
+}
+
+// newsquery 数据库查询
+func newsquery(field string) []*Newsinfo {
+	db := dbinit()
+	rows, err := db.Query("SELECT * FROM newsinfo WHERE field=?", field)
+	if err != nil {
+		log.Fatal("Line81-Error: ", err)
+		return nil
+	}
+	defer rows.Close()
+
+	allnews := []*Newsinfo{}
+	for rows.Next() {
+		n := new(Newsinfo)
+		err := rows.Scan(&n.field, &n.title, &n.author, &n.authorid, &n.publishtime, &n.views, &n.comments, &n.url)
+		if err != nil {
+			log.Fatal("Line89-Error: ", err)
+			return nil
+		}
+		allnews = append(allnews, n)
+	}
+	return allnews
+}
+
+// newsdelete 清空数据库表 TODO: 暂支持手动清空
+func newsdelete() error {
+	db := dbinit()
+	stmt, err := db.Prepare("DELETE FROM newsinfo")
+	if err != nil {
+		log.Fatal("Line105-Error: ", err)
+		return err
+	}
+	_, err = stmt.Exec()
+	if err != nil {
+		log.Fatal("Line110-Error: ", err)
+		return err
+	}
+
+	return nil
+}
