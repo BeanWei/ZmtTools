@@ -8,6 +8,9 @@ import (
 	"github.com/json-iterator/go"
 )
 
+//初始化数据库
+var db = dbinit()
+
 func qqnews() {
 
 	c := colly.NewCollector()
@@ -22,16 +25,21 @@ func qqnews() {
 	c.OnResponse(func(r *colly.Response) {
 		jsonbyte := []byte(r.Body[6:(len(r.Body) - 1)])
 		total := jsoniter.Get(jsonbyte, "datanum").ToInt()
+		field := "娱乐"
 		for index := 0; index < total; index++ {
 			url := jsoniter.Get(jsonbyte, "data", index, "surl").ToString()
 			title := jsoniter.Get(jsonbyte, "data", index, "title").ToString()
 			author := jsoniter.Get(jsonbyte, "data", index, "source").ToString()
-			authorID := jsoniter.Get(jsonbyte, "data", index, "source_id").ToString()
+			authorid := jsoniter.Get(jsonbyte, "data", index, "source_id").ToString()
 			publishtime := jsoniter.Get(jsonbyte, "data", index, "publish_time").ToString()
 			views := jsoniter.Get(jsonbyte, "data", index, "view_count").ToInt()
 			comments := jsoniter.Get(jsonbyte, "data", index, "comment_num").ToInt()
-			log.Println(url, title, author, authorID, publishtime, views, comments)
-			//TODO: 数据入库
+			//数据入库
+			err := newsadd(db, field, title, author, authorid, publishtime, views, comments, url)
+			if err != nil {
+				log.Fatal("Line50-Error: ", err)
+			}
+
 		}
 	})
 
