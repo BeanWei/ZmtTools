@@ -25,3 +25,4 @@
 
 
 # 热搜实时监控
+  * 搜狗: http://top.sogou.com/hot/shishi_1.html

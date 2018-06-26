@@ -37,7 +37,7 @@ func qqnews() {
 			//数据入库
 			err := newsadd(db, field, title, author, authorid, publishtime, views, comments, url)
 			if err != nil {
-				log.Fatal("Line50-Error: ", err)
+				log.Fatal("Line40-Error: ", err)
 			}
 
 		}
