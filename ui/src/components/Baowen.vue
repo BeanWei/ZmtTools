@@ -210,7 +210,7 @@
           this.$qs.stringify(postData)
         ).then(response => {
           console.log(response.data)
-          for (item in JSON.parse(response.data.reObj).content) {
+          for (var item in JSON.parse(response.data.reObj).content) {
             const data = {}
             data.platform = item.platform
             data.title = item.title
