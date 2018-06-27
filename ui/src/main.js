@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import querystring from 'querystring'
 import axios from 'axios'
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
@@ -9,8 +10,9 @@ import 'material-design-icons-iconfont/dist/material-design-icons.css'
 
 Vue.use(Vuetify)
 
-axios.defaults.withCredentials = true
+// axios.defaults.withCredentials = true
 Vue.prototype.$axios = axios
+Vue.prototype.$qs = querystring
 
 const isDebug_mode = process.env.NODE_ENV !== 'production'
 Vue.config.debug = isDebug_mode

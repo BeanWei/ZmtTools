@@ -1,53 +1,43 @@
 <template>
   <v-card>
-    <v-container id="dropdown-example" grid-list-xl>
+    <v-container id="baowen" grid-list-xl>
       <v-layout row wrap>
         <v-flex xs12 sm2>
           <p>平台</p>
           <v-select
-            :items="platform"
-            pingtai
-            label="全部"
-            target="#dropdown-example"
+            :items="platformlist"
+            v-model="platform" 
           ></v-select>
         </v-flex>
         <v-flex xs12 sm2>
           <p>领域</p>
           <v-select
-            :items="domain"
-            label="全部"
-            lingyu 
-            target="#dropdown-example"
+            :items="domainlist"
+            v-model="domain"  
           ></v-select>
         </v-flex>
         <v-flex xs12 sm2>
           <p>排序方式</p>
           <v-select
-            :items="sortway"
-            label="阅读量"
-            pxfs
-            item-value="text"
+            :items="sortwaylist"
+            v-model="sortway" 
           ></v-select>
         </v-flex>
         <v-flex xs12 sm2>
           <p>阅读量</p>
           <v-select
-            :items="totalview"
-            label="不限"
-            yueduliang
-            item-value="text"
+            :items="totalviewlist"
+            v-model="totalview"  
           ></v-select>
         </v-flex>
         <v-flex xs12 sm2>
           <p>时间段</p>
           <v-select
-            :items="timerange"
-            label="24小时"
-            shijianduan
-            item-value="text"
+            :items="timerangelist"
+            v-model="timerange" 
           ></v-select>
         </v-flex>
-        <v-btn color="blue-grey" class="white--text" style="margin-top: 60px;">
+        <v-btn color="blue-grey" class="white--text" style="margin-top: 60px;" @click="submit">
           提交
           <v-icon right dark>cloud_download</v-icon>
         </v-btn>
@@ -67,6 +57,7 @@
     <v-data-table
       :headers="headers"
       :search="search"
+      :items="desserts"
     >
       <template slot="items" slot-scope="props">
         <td></td>
@@ -86,66 +77,67 @@
 <script>
   export default {
     data: () => ({
-      platform: [
-        { text: '全部' },
-        { text: '微信' },
-        { text: '今日头条' },
-        { text: '一点资讯' },
-        { text: '大鱼号' },
-        { text: '百家号' },
-        { text: '搜狐号' },
-        { text: '网易号' },
+      platformlist: [
+        '全部' ,
+        '微信' ,
+        '今日头条' ,
+        '一点资讯' ,
+        '大鱼号' ,
+        '百家号' ,
+        '搜狐号' ,
+        '网易号' ,
       ],
-      domain: [
-        { text: '全部' },
-        { text: '育儿' },
-        { text: '教育' },
-        { text: '生活' },
-        { text: '美食' },
-        { text: '情感' },
-        { text: '旅行' },
-        { text: '职场' },
-        { text: '时政' },
-        { text: '财经' },
-        { text: '军事' },
-        { text: '文化' },
-        { text: '历史' },
-        { text: '科技' },
-        { text: '数码' },
-        { text: '影视' },
-        { text: '星座' },
-        { text: '游戏' },
-        { text: '动漫' },
-        { text: '萌宠' },
-        { text: '娱乐' },
-        { text: '搞笑' },
-        { text: '时尚' },
-        { text: '体育' },
-        { text: '健康' },
-        { text: '房产' },
-        { text: '汽车' },
-        { text: '传媒' },
-        { text: '三农' },
-        { text: '综合' }
+      domainlist: [
+        '全部' ,
+        '育儿' ,
+        '教育' ,
+        '生活' ,
+        '美食' ,
+        '情感' ,
+        '旅行' ,
+        '职场' ,
+        '时政' ,
+        '财经' ,
+        '军事' ,
+        '文化' ,
+        '历史' ,
+        '科技' ,
+        '数码' ,
+        '影视' ,
+        '星座' ,
+        '游戏' ,
+        '动漫' ,
+        '萌宠' ,
+        '娱乐' ,
+        '搞笑' ,
+        '时尚' ,
+        '体育' ,
+        '健康' ,
+        '房产' ,
+        '汽车' ,
+        '传媒' ,
+        '三农' ,
+        '综合' 
       ],
-      sortway: [
-        { text: '发布时间' },
-        { text: '阅读量' },
-        { text: '评论数' }
+      sortwaylist: [
+        '默认' ,
+        '发布时间' ,
+        '阅读量' ,
+        '评论数' 
       ],
-      totalview: [
-        { text: '不限' },
-        { text: '1万+' },
-        { text: '5万+' },
-        { text: '10万+' },
-        { text: '50万+' }
+      totalviewlist: [
+        '不限' ,
+        '1万+' ,
+        '5万+' ,
+        '10万+' ,
+        '50万+' 
       ],
-      timerange: [
-        { text: '不限' },
-        { text: '12小时' },
-        { text: '24小时' },
-        { text: '3天内' },
-        { text: '7天内' }
+      timerangelist: [
+        '不限' ,
+        '12小时' ,
+        '24小时' ,
+        '3天内' ,
+        '7天内' 
       ],
       search: '',
       headers: [
@@ -157,6 +149,7 @@
         { text: '阅读', align: 'left', sortable: false, value: '' },
         { text: '评论', align: 'left', sortable: false, value: '' }
       ],
+      desserts: [],
       // desserts: [
       //   {
       //     value: false,
@@ -167,89 +160,71 @@
       //     protein: 4.0,
       //     iron: '1%'
       //   },
-      //   {
-      //     value: false,
-      //     name: 'Ice cream sandwich',
-      //     calories: 237,
-      //     fat: 9.0,
-      //     carbs: 37,
-      //     protein: 4.3,
-      //     iron: '1%'
-      //   },
-      //   {
-      //     value: false,
-      //     name: 'Eclair',
-      //     calories: 262,
-      //     fat: 16.0,
-      //     carbs: 23,
-      //     protein: 6.0,
-      //     iron: '7%'
-      //   },
-      //   {
-      //     value: false,
-      //     name: 'Cupcake',
-      //     calories: 305,
-      //     fat: 3.7,
-      //     carbs: 67,
-      //     protein: 4.3,
-      //     iron: '8%'
-      //   },
-      //   {
-      //     value: false,
-      //     name: 'Gingerbread',
-      //     calories: 356,
-      //     fat: 16.0,
-      //     carbs: 49,
-      //     protein: 3.9,
-      //     iron: '16%'
-      //   },
-      //   {
-      //     value: false,
-      //     name: 'Jelly bean',
-      //     calories: 375,
-      //     fat: 0.0,
-      //     carbs: 94,
-      //     protein: 0.0,
-      //     iron: '0%'
-      //   },
-      //   {
-      //     value: false,
-      //     name: 'Lollipop',
-      //     calories: 392,
-      //     fat: 0.2,
-      //     carbs: 98,
-      //     protein: 0,
-      //     iron: '2%'
-      //   },
-      //   {
-      //     value: false,
-      //     name: 'Honeycomb',
-      //     calories: 408,
-      //     fat: 3.2,
-      //     carbs: 87,
-      //     protein: 6.5,
-      //     iron: '45%'
-      //   },
-      //   {
-      //     value: false,
-      //     name: 'Donut',
-      //     calories: 452,
-      //     fat: 25.0,
-      //     carbs: 51,
-      //     protein: 4.9,
-      //     iron: '22%'
-      //   },
-      //   {
-      //     value: false,
-      //     name: 'KitKat',
-      //     calories: 518,
-      //     fat: 26.0,
-      //     carbs: 65,
-      //     protein: 7,
-      //     iron: '6%'
-      //   }
       // ]
-    })
+      platform: "全部",
+      domain: "全部",
+      sortway: "发布时间",
+      totalview: "不限",
+      page:	1,
+      timerange: "24小时"
+
+    }),
+    methods: {
+      submit() {
+        let postData = {
+          lgCustomerId:	"1000186598",
+          page:	this.page,
+          reqTime:	new Date().getTime().toString(),
+          size:	10,
+          status:	1
+        }
+        if (this.platform !== "全部") {
+          postData.platform = this.platform
+        }
+        if (this.domain !== "全部") {
+          postData.domain = this.domain
+        }
+        if (this.sortway !== "默认") {
+          if (this.sortway === "发布时间") {
+            postData.lptimeOrder = "DESC"
+          } else if (this.sortway === "阅读量") {
+            postData.readOrder = "DESC"
+          } else if (this.sortway === "评论数") {
+            postData.commentOrder =	"DESC"
+          }
+        }
+        if (this.totalview === "不限") {
+           postData.read = 0
+        } else if (this.totalview === "1万+") {
+          postData.read = 10000
+        } else if (this.totalview === "5万+") {
+          postData.read = 50000
+        } else if (this.totalview === "10万+") {
+          postData.read = 100000
+        } else if (this.totalview === "50万+") {
+          postData.read = 500000
+        } 
+        if (this.timerange === "不限") {
+          postData.lptime = "0"
+        } else if (this.timerange === "12小时") {
+          postData.lptime = Math.round((new Date().getTime()/1000)-3600*12).toString()
+        } else if (this.timerange === "24小时") {
+          postData.lptime = Math.round((new Date().getTime()/1000)-3600*24).toString()
+        } else if (this.timerange === "3天内") {
+          postData.lptime = Math.round((new Date().getTime()/1000)-3600*24*3).toString()
+        } else if (this.timerange === "7天内") {
+          postData.lptime = Math.round((new Date().getTime()/1000)-3600*24*7).toString()
+        } 
+        this.$axios.post(
+          "http://www.myleguan.com/lg_res/focus/flr/la",
+          this.$qs.stringify(postData)
+        ).then(response => {
+          console.log(response.data)
+        }, response => {
+          alert("出错了！")
+        })
+      }
+    }
   }
 </script>
 
