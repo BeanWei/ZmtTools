@@ -57,15 +57,16 @@
     <v-data-table
       :headers="headers"
       :search="search"
-      :items="desserts"
+      :items="respdata"
     >
       <template slot="items" slot-scope="props">
-        <td></td>
-        <td class="text-xs-right"></td>
-        <td class="text-xs-right"></td>
-        <td class="text-xs-right"></td>
-        <td class="text-xs-right"></td>
-        <td class="text-xs-right"></td>
+        <td class="text-xs-right">{{props.item.platform}}</td>
+        <td class="text-xs-right">{{props.item.title}}</td>
+        <td class="text-xs-right">{{props.item.nickName}}</td>
+        <td class="text-xs-right">{{props.item.domain}}</td>
+        <td class="text-xs-right">{{props.item.publicTime}}</td>
+        <td class="text-xs-right">{{props.item.read}}</td>
+        <td class="text-xs-right">{{props.item.comment}}</td>
       </template>
       <v-alert slot="no-results" :value="true" color="error" icon="warning">
         Your search for "{{ search }}" found no results.
@@ -141,26 +142,15 @@
       ],
       search: '',
       headers: [
-        { text: '平台', align: 'left', sortable: false, value: '' },
-        { text: '标题', align: 'left', sortable: false, value: '' },
-        { text: '作者', align: 'left', sortable: false, value: '' },
-        { text: '领域', align: 'left', sortable: false, value: '' },
-        { text: '时间', align: 'left', sortable: false, value: '' },
-        { text: '阅读', align: 'left', sortable: false, value: '' },
-        { text: '评论', align: 'left', sortable: false, value: '' }
+        { text: '平台', align: 'left', sortable: false, value: 'platform' },
+        { text: '标题', align: 'left', sortable: false, value: 'title' },
+        { text: '作者', align: 'left', sortable: false, value: 'nickName' },
+        { text: '领域', align: 'left', sortable: false, value: 'domain' },
+        { text: '时间', align: 'left', sortable: false, value: 'publicTime' },
+        { text: '阅读', align: 'left', sortable: false, value: 'read' },
+        { text: '评论', align: 'left', sortable: false, value: 'comment' }
       ],
-      desserts: [],
-      // desserts: [
-      //   {
-      //     value: false,
-      //     name: 'Frozen Yogurt',
-      //     calories: 159,
-      //     fat: 6.0,
-      //     carbs: 24,
-      //     protein: 4.0,
-      //     iron: '1%'
-      //   },
-      // ]
+      respdata: [],
       platform: "全部",
       domain: "全部",
       sortway: "发布时间",
@@ -220,6 +210,18 @@
           this.$qs.stringify(postData)
         ).then(response => {
           console.log(response.data)
+          for (item in JSON.parse(response.data.reObj).content) {
+            const data = {}
+            data.platform = item.platform
+            data.title = item.title
+            data.nickName = item.nickName
+            data.domain = item.domain
+            data.publicTime = item.publicTime
+            data.read = item.read
+            data.comment = item.comment
+            this.respdata.push(data)
+          }
+          console.log(this.respdata)
         }, response => {
           alert("出错了！")
         })
