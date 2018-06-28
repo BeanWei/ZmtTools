@@ -202,6 +202,7 @@
       loading: false,
       pagenum: '',
       totalpages: 1,
+      pagechage: false
     }),
     methods: {
       submit() {
@@ -250,6 +251,10 @@
         } else if (this.timerange === "7天内") {
           postData.lptime = Math.round((new Date().getTime()/1000)-3600*24*7).toString()
         } 
+        if (this.pagechage === false) {
+          this.page = 1
+          this.pagenum = ''
+        }
         this.$axios.post(
           "http://www.myleguan.com/lg_res/focus/flr/la",
           this.$qs.stringify(postData)
@@ -276,12 +281,14 @@
         setTimeout(() => {
           this.loading = false
         }, 1000) 
+        this.pagechage = false
       },
       pagejump() {
         if (this.pagenum < 1 || this.pagenum > this.totalpages) {
           alert("请输入正确的页数")
         } else {
           this.page = this.pagenum
+          this.pagechage = true
           this.submit()
         }   
       },
@@ -290,6 +297,7 @@
           alert("没有上一页了")
         } else {
           this.page--
+          this.pagechage = true
           this.submit()
         }
       },
@@ -298,6 +306,7 @@
           alert("没有下一页了")
         } else {
           this.page++
+          this.pagechage = true
           this.submit()
         }
       }
