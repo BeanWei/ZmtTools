@@ -13,6 +13,7 @@ const Baowen  = () => import('../components/Baowen.vue')
 Vue.use(Router)
 
 export default new Router({
+  mode: 'history',
   routes: [
     {
       path: '/',
@@ -27,26 +28,31 @@ export default new Router({
       path: '/main',
       name: 'Main',
       component: Main,
+      meta: {keepAlive: true},
       children:[
         {
           path:'upload/',
           name: 'Upload',
-          component: Upload
+          component: Upload,
+          meta: {keepAlive: true}
         },
         {
           path:'allspider/',
           name: 'Allspider',
-          component: Allspider
+          component: Allspider,
+          meta: {keepAlive: true}
         },
         {
           path:'idspider/',
           name: 'IDspider',
-          component: IDspider
+          component: IDspider,
+          meta: {keepAlive: true}
         },
         {
           path:'baowen/',
           name: 'Baowen',
-          component: Baowen
+          component: Baowen,
+          meta: {keepAlive: true}
         }
       ]
     }
