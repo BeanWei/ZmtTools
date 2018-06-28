@@ -3,47 +3,52 @@
     <v-container id="baowen" grid-list-xl>
       <v-layout row wrap>
         <v-flex xs12 sm2>
-          <p>平台</p>
+          <p style="margin-top: -20px;">平台</p>
           <v-select
             :items="platformlist"
             v-model="platform" 
+            style="margin-top: -25px;"
           ></v-select>
         </v-flex>
         <v-flex xs12 sm2>
-          <p>领域</p>
+          <p style="margin-top: -20px;">领域</p>
           <v-select
             :items="domainlist"
             v-model="domain"  
+            style="margin-top: -25px;"
           ></v-select>
         </v-flex>
         <v-flex xs12 sm2>
-          <p>排序方式</p>
+          <p style="margin-top: -20px;">排序方式</p>
           <v-select
             :items="sortwaylist"
             v-model="sortway" 
+            style="margin-top: -25px;"
           ></v-select>
         </v-flex>
         <v-flex xs12 sm2>
-          <p>阅读量</p>
+          <p style="margin-top: -20px;">阅读量</p>
           <v-select
             :items="totalviewlist"
             v-model="totalview"  
+            style="margin-top: -25px;"
           ></v-select>
         </v-flex>
         <v-flex xs12 sm2>
-          <p>时间段</p>
+          <p style="margin-top: -20px;">时间段</p>
           <v-select
             :items="timerangelist"
             v-model="timerange" 
+            style="margin-top: -25px;"
           ></v-select>
         </v-flex>
-        <v-btn color="blue-grey" class="white--text" style="margin-top: 60px;" @click="submit">
+        <v-btn color="blue-grey" class="white--text" style="margin-top: 12px;" @click="submit">
           提交
           <v-icon right dark>cloud_download</v-icon>
         </v-btn>
       </v-layout>
     </v-container>
-    <v-card-title>
+    <v-card-title style="margin-top: -70px;">
       *一点资讯、大鱼号和网易号平台不提供阅读量数据，请悉知。
       <v-spacer></v-spacer>
       <v-text-field
@@ -58,20 +63,57 @@
       :headers="headers"
       :search="search"
       :items="respdata"
+      :loading = "loading"
+      class="elevation-3"
+      hide-actions
     >
       <template slot="items" slot-scope="props">
-        <td class="text-xs-right">{{props.item.platform}}</td>
-        <td class="text-xs-right">{{props.item.title}}</td>
-        <td class="text-xs-right">{{props.item.nickName}}</td>
-        <td class="text-xs-right">{{props.item.domain}}</td>
-        <td class="text-xs-right">{{props.item.publicTime}}</td>
-        <td class="text-xs-right">{{props.item.read}}</td>
-        <td class="text-xs-right">{{props.item.comment}}</td>
+        <td class="text-xs-left">{{props.item.platform}}</td>
+        <td class="text-xs-left">{{props.item.title}}</td>
+        <td class="text-xs-left">{{props.item.nickName}}</td>
+        <td class="text-xs-left">{{props.item.domain}}</td>
+        <td class="text-xs-left">{{props.item.publicTime}}</td>
+        <td class="text-xs-left">{{props.item.read}}</td>
+        <td class="text-xs-left">{{props.item.comment}}</td>
+      </template>
+      <template slot="no-data">
+        <v-alert :value="true" outline color="error" icon="warning">
+          Sorry, nothing to display here :(
+        </v-alert>
       </template>
       <v-alert slot="no-results" :value="true" color="error" icon="warning">
         Your search for "{{ search }}" found no results.
       </v-alert>
     </v-data-table>
+    <v-layout row justify-space-around>
+      <v-flex xs12 sm1>
+        <v-btn flat icon large color="blue-grey darken-2" @click="previous">
+          <v-icon>keyboard_arrow_left</v-icon>
+          上一页
+        </v-btn>
+      </v-flex>
+      <v-flex xs12 sm1>
+        <v-subheader>跳转至:</v-subheader>
+      </v-flex>
+      <v-flex xs12 sm4>
+        <v-text-field
+          v-model="pagenum"
+          label="输入页数"
+          single-line
+          style="margin-top: -12px;"
+          @keyup.enter="pagejump"
+        ></v-text-field>
+      </v-flex>
+      <v-flex xs12 sm2>
+        <v-subheader>页 | 共{{totalpages}}页 | 当前第-{{page}}-页</v-subheader>
+      </v-flex>
+      <v-flex xs12 sm1>
+        <v-btn flat icon large color="blue-grey darken-2" @click="next">
+          下一页
+          <v-icon>keyboard_arrow_right</v-icon>
+        </v-btn>
+      </v-flex>
+    </v-layout>
   </v-card>
 </template>
 
@@ -156,11 +198,14 @@
       sortway: "发布时间",
       totalview: "不限",
       page:	1,
-      timerange: "24小时"
-
+      timerange: "24小时",
+      loading: false,
+      pagenum: '',
+      totalpages: 1,
     }),
     methods: {
       submit() {
+        this.loading = true
         let postData = {
           lgCustomerId:	"1000186598",
           page:	this.page,
@@ -209,24 +254,57 @@
           "http://www.myleguan.com/lg_res/focus/flr/la",
           this.$qs.stringify(postData)
         ).then(response => {
-          console.log(response.data)
-          for (var item in JSON.parse(response.data.reObj).content) {
+          var obj = JSON.parse(response.data.reObj)
+          this.totalpages = obj.totalPages
+          var objlist = obj.content
+          this.respdata = []
+          for (var item in objlist) {
             const data = {}
-            data.platform = item.platform
-            data.title = item.title
-            data.nickName = item.nickName
-            data.domain = item.domain
-            data.publicTime = item.publicTime
-            data.read = item.read
-            data.comment = item.comment
+            data.platform = objlist[item].platform
+            data.title = objlist[item].title
+            data.nickName = objlist[item].nickName
+            data.domain = objlist[item].domain
+            data.publicTime = objlist[item].publicTime
+            data.read = objlist[item].read
+            data.comment = objlist[item].comment
             this.respdata.push(data)
           }
           console.log(this.respdata)
         }, response => {
           alert("出错了！")
         })
+        setTimeout(() => {
+          this.loading = false
+        }, 1000) 
+      },
+      pagejump() {
+        if (this.pagenum < 1 || this.pagenum > this.totalpages) {
+          alert("请输入正确的页数")
+        } else {
+          this.page = this.pagenum
+          this.submit()
+        }   
+      },
+      previous() {
+        if (this.page === 1) {
+          alert("没有上一页了")
+        } else {
+          this.page--
+          this.submit()
+        }
+      },
+      next() {
+        if (this.page === this.totalpages) {
+          alert("没有下一页了")
+        } else {
+          this.page++
+          this.submit()
+        }
       }
-    }
+    },
+    // created() { 
+    //   this.submit()
+    // }
   }
 </script>
 
