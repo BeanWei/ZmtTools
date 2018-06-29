@@ -31,8 +31,8 @@ func IDspider( reqinfo *IDpost) (results []Result) {
 	platform := reqinfo.Platform
 	authorid := reqinfo.AuthorID
 	readlimit := reqinfo.Readlimit
-	datefrom := reqinfo.Datefrom
-	dateto := reqinfo.Dateto
+	datefrom := fmt.Sprintf("%s 00:00:00", reqinfo.Datefrom)
+	dateto := fmt.Sprintf("%s 23:59:59", reqinfo.Dateto)
 
 	switch platform {
 	case "大鱼号":
