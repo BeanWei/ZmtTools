@@ -48,6 +48,16 @@
         </v-btn>
       </v-layout>
     </v-container>
+    <v-dialog v-model="browse" width="600px">
+      <v-card-title>
+        <span class="headline">{{posttitle}}</span>
+      </v-card-title>
+      <v-card-text>{{postcontent}}</v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="green darken-1" flat="flat" @click="browse = false">关闭</v-btn>
+      </v-card-actions>
+    </v-dialog>
     <v-card-title style="margin-top: -70px;">
       *一点资讯、大鱼号和网易号平台不提供阅读量数据，请悉知。
       <v-spacer></v-spacer>
@@ -75,6 +85,17 @@
         <td class="text-xs-left">{{props.item.publicTime}}</td>
         <td class="text-xs-left">{{props.item.read}}</td>
         <td class="text-xs-left">{{props.item.comment}}</td>
+        <td class="justify-center layout px-0">
+          <v-btn icon class="mx-0" @click="editItem(props.item.url)">
+            <v-icon color="teal">edit</v-icon>
+          </v-btn>
+          <!-- <v-btn icon class="mx-0" @click="collectItem(props.item)">
+            <v-icon color="red">bookmarks</v-icon>
+          </v-btn>
+          <v-btn icon class="mx-0" @click="followItem(props.item)">
+            <v-icon color="pink">person_add</v-icon>
+          </v-btn> -->
+        </td>
       </template>
       <template slot="no-data">
         <v-alert :value="true" outline color="error" icon="warning">
@@ -191,7 +212,8 @@
         { text: '领域', align: 'left', sortable: false, value: 'domain' },
         { text: '时间', align: 'left', sortable: false, value: 'publicTime' },
         { text: '阅读', align: 'left', sortable: false, value: 'read' },
-        { text: '评论', align: 'left', sortable: false, value: 'comment' }
+        { text: '评论', align: 'left', sortable: false, value: 'comment' },
+        { text: '更多', sortable: false, value: 'url' }
       ],
       respdata: [],
       platform: "全部",
@@ -203,7 +225,10 @@
       loading: false,
       pagenum: '',
       totalpages: 1,
-      pagechage: false
+      pagechage: false,
+      browse: false,
+      posttitle: '',
+      postcontent: ''
     }),
     methods: {
       submit() {
@@ -268,6 +293,7 @@
             const data = {}
             data.platform = objlist[item].platform
             data.title = objlist[item].title
+            data.url = objlist[item].url
             data.nickName = objlist[item].nickName
             data.domain = objlist[item].domain
             data.publicTime = objlist[item].publicTime
@@ -310,6 +336,24 @@
           this.pagechage = true
           this.submit()
         }
+      },
+      editItem(url) {
+        this.$axios.post(
+          "http://120.35.10.209:5097/getContent",
+          {"url": url},
+          {
+            "Content-Type": "application/json",
+            "Host": "120.35.10.209:5097",
+            "Origin": "http://www.myleguan.com",
+            "Referer": "http://www.myleguan.com/lgEditor/lgEditor.html"
+          }
+        ).then(response => {
+          var jsdata = JSON.parse(response.data.data)
+          this.posttitle = jsdata.title
+          this.postcontent = jsdata.content
+        }, response => {
+          alert("出错了！")
+        })
       }
     },
     // created() { 

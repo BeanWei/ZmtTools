@@ -17,70 +17,81 @@
           <v-btn
             color="teal"
             class="white--text"
-            style="margin-top: 10px; margin-right: 26px;"
+            style="margin: 10px 26px 0px -10px;"
             @click.native="loader = 'loading3'"
           >
             解析ID
             <v-icon right dark>adb</v-icon>
           </v-btn>
-          <v-flex xs12 sm4>
+          <v-flex xs12 sm3>
             <v-text-field
               v-model="authorID"
               :rules="IDRules"
-              label="ID"
+              label="输入作者ID"
               required
+              prepend-icon="perm_identity"
               style="margin-top: -2px;"
             ></v-text-field>
           </v-flex>
-          <v-flex xs12 sm6 md3>
-            <v-dialog
-              ref="dialog"
-              v-model="modal"
+          <v-flex xs12 sm2>
+            <v-text-field
+              v-model="readlimit"
+              :rules="ReadlimitRules"
+              label="输入阅读量下限"
+              required
+              prepend-icon="remove_red_eye"
+              style="margin-top: -2px;"
+            ></v-text-field>
+          </v-flex>
+          <v-flex xs12 sm6 md2>
+            <v-menu
+              ref="menu1"
+              :close-on-content-click="false"
+              v-model="menu1"
+              :nudge-right="40"
               :return-value.sync="date"
-              persistent
               lazy
+              transition="scale-transition"
+              offset-y
               full-width
-              width="290px"
+              max-width="290px"
+              min-width="290px"
             >
               <v-text-field
                 slot="activator"
                 v-model="datefrom"
-                label="选择起始时间段"
-                prepend-icon="event"
+                label="选择起始日期"
+                prepend-icon="date_range"
                 readonly
                 style="margin-top: -2px;margin-left: 10px;"
               ></v-text-field>
-              <v-date-picker v-model="datefrom" scrollable>
-                <v-spacer></v-spacer>
-                <v-btn flat color="primary" @click="modal = false">Cancel</v-btn>
-                <v-btn flat color="primary" @click="$refs.dialog.save(datefrom)">OK</v-btn>
-              </v-date-picker>
-            </v-dialog>
+              <v-date-picker v-model="datefrom" no-title @input="$refs.menu1.save(date)"></v-date-picker>
+            </v-menu>
           </v-flex>
-          <v-flex xs12 sm6 md3>
-            <v-dialog
-              ref="dialog"
-              v-model="modal"
+          <v-flex xs12 sm6 md2>
+            <v-menu
+              ref="menu2"
+              :close-on-content-click="false"
+              v-model="menu2"
+              :nudge-right="40"
               :return-value.sync="date"
-              persistent
               lazy
+              transition="scale-transition"
+              offset-y
               full-width
-              width="290px"
+              max-width="290px"
+              min-width="290px"
             >
               <v-text-field
                 slot="activator"
                 v-model="dateto"
-                label="选择终止时间段"
-                prepend-icon="event"
+                label="选择终止日期"
+                prepend-icon="date_range"
                 readonly
                 style="margin-top: -2px;margin-left: 17px;"
               ></v-text-field>
-              <v-date-picker v-model="dateto" scrollable>
-                <v-spacer></v-spacer>
-                <v-btn flat color="primary" @click="modal = false">Cancel</v-btn>
-                <v-btn flat color="primary" @click="$refs.dialog.save(dateto)">OK</v-btn>
-              </v-date-picker>
-            </v-dialog>
+              <v-date-picker v-model="dateto" no-title @input="$refs.menu2.save(date)"></v-date-picker>
+            </v-menu>
           </v-flex>
         </v-layout>
       </v-container>
@@ -122,9 +133,15 @@
           v => !!v || '请输入作者ID',
           // v => v.length <= 10 || 'Name must be less than 10 characters'
         ],
+        readlimit: '',
+        ReadlimitRules: [
+          v => !!v || '请输入阅读量下限以便筛选',
+          // v => v.length <= 10 || 'Name must be less than 10 characters'
+        ],
         datefrom: null,
         dateto: null,
-        modal: false,
+        menu1: false,
+        menu2: false,
         loading: false,
         headers: [
           { text: '领域', align: 'left', sortable: false, value: 'domain' },
@@ -144,9 +161,11 @@
         const idpost = {
           "platform": this.sites,
           "authorid": this.authorID,
+          "readlimit": this.readlimit,
           "datefrom": this.datefrom,
           "dateto": this.dateto
         }
+        console.log(idpost)
         astilectron.sendMessage({
           name: "IDspider",
           payload: idpost

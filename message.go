@@ -3,32 +3,50 @@ package main
 import (
 	
 	"encoding/json"
-	"log"
 
 	"github.com/asticode/go-astilog"
 	"github.com/ZEROKISEKI/go-astilectron-bootstrap"
 	"github.com/asticode/go-astilectron"
 )
 
+// UploadInfo 视频上传信息接口   
+type UploadInfo []struct {
+	Title    string `json:"title"`
+	Describe string `json:"describe"`
+	Tags     string `json:"tags"`
+	Field    string `json:"field"`
+}
+
+// IDspider 获取前台提交的数据
+type IDpost struct {
+	Platform	string `json:"platform"`
+	AuthorID	string	`json:"authorid"`
+	Readlimit string	`json:"readlimit"`
+	Datefrom	string	`json:"datefrom"`
+	Dateto		string	`json:"dateto"`
+}
+
 // handleMessages handles messages
 func handleMessages(a *astilectron.Astilectron, _ *astilectron.Window, m bootstrap.MessageIn) (payload interface{}, err error) {
 	switch m.Name {
 	case "Upload":
 		{
-			// UploadInfo 视频上传信息接口
-			var UploadInfo []struct {
-				Title    string `json:"title"`
-				Describe string `json:"describe"`
-				Tags     string `json:"tags"`
-				Field    string `json:"field"`
-			}
-
-			err := json.Unmarshal(m.Payload, &UploadInfo)
+			uploadinfo := &UploadInfo{}
+			err := json.Unmarshal(m.Payload, uploadinfo)
 			if err != nil {
 				return err.Error(), nil
 			}
-			log.Println("test")
-			astilog.Debug(UploadInfo)
+			astilog.Debug(uploadinfo)
+		}
+	case "IDspider":
+		{
+			idpost := &IDpost{}
+			err := json.Unmarshal(m.Payload, idpost)
+			if err != nil {
+				return err.Error(), nil
+			}
+			astilog.Debug(idpost)
+			payload = IDspider(idpost)
 		}
 	}
 	return
