@@ -119,6 +119,7 @@
 
 <script>
   export default {
+    name: 'Baowen',
     data: () => ({
       platformlist: [
         '全部' ,

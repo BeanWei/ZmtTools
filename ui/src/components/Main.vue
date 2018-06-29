@@ -50,7 +50,7 @@
 <script>
 import SideBar from './Sidebar.vue'
 export default {
-  name: "Main",
+  name: 'Main',
   components: {
     SideBar
   },

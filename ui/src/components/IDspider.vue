@@ -104,6 +104,7 @@
 
 <script>
   export default {
+    name: 'IDspider',
     data () {
       return {
         valid: false,
