@@ -19,7 +19,7 @@
     <v-data-table
       :headers="headers"
       :items="desserts"
-      :loading="true"
+      :loading="false"
       class="elevation-1"
     >
       <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>

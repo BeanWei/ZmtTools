@@ -161,7 +161,9 @@ export default {
       astilectron.sendMessage({
         name: "Upload",
         payload: allvideo
-      },function(message){})
+      },function(message){
+        alert("后台正在处理")
+      })
     }
   }
 }
