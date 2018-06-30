@@ -1,8 +1,12 @@
 <template>
   <v-card>
-    <div id="editorElem" style="text-align:left">
-      <p>欢迎使用富文本编辑器</p>
+    <div id="toolbar"></div>
+    <div id="content">
+      <p>请输入内容</p>
     </div>
+    <!-- <div id="editorElem" style="text-align:left">
+      <p>欢迎使用富文本编辑器</p>
+    </div> -->
     <v-speed-dial
       v-model="fab"
       bottom
@@ -60,7 +64,7 @@ export default {
     }
   },
   mounted() {
-    var editor = new WangEditor('#editorElem')
+    var editor = new WangEditor('#toolbar', '#content')
     editor.customConfig.onchange = (html) => {
       this.editorContent = html
       editor.customConfig.uploadImgServer = '' 
@@ -113,5 +117,12 @@ export default {
 </script>
 
 <style scoped>
-
+  #toolbar {
+    border: 1px solid #ccc;
+  }
+  #content {
+    border: 1px solid #ccc;
+    height: 600px;
+    min-height: 450px;
+  }
 </style>
