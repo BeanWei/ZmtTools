@@ -64,7 +64,7 @@ export default {
         { title: '批量上传', icon: 'question_answer', itemVue: 'Upload' },
         { title: '定向获取', icon: 'dashboard', itemVue: 'IDspider' },
         { title: '资源采集', icon: 'dashboard', itemVue: 'Allspider' },
-        { title: '伪原创', icon: 'dashboard', itemVue: 'Main' },
+        { title: '伪原创', icon: 'dashboard', itemVue: 'Editor' },
         { title: '今日最热', icon: 'dashboard', itemVue: 'Main' },
         { title: '关于', icon: 'dashboard', itemVue: 'Login' }
       ],

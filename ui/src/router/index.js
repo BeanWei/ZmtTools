@@ -9,6 +9,7 @@ const Upload = () => import('../components/Upload')
 const Allspider = () => import('../components/Allspider')
 const IDspider = () => import('../components/IDspider')
 const Baowen  = () => import('../components/Baowen.vue')
+const Editor = () => import('../components/Editor.vue')
 
 Vue.use(Router)
 
@@ -51,6 +52,12 @@ export default new Router({
           path:'baowen/',
           name: 'Baowen',
           component: Baowen,
+          meta: {keepAlive: true}
+        },
+        {
+          path:'editor/',
+          name: 'Editor',
+          component: Editor,
           meta: {keepAlive: true}
         }
       ]

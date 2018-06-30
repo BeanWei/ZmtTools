@@ -10,8 +10,14 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "axios": "^0.18.0",
+    "material-design-icons-iconfont": "^3.0.3",
+    "smeditor": "^0.1.19",
     "vue": "^2.5.2",
-    "vue-router": "^3.0.1"
+    "vue-router": "^3.0.1",
+    "vue-ueditor-wrap": "^1.3.0",
+    "vuetify": "^1.1.0",
+    "wangeditor": "file:wangeditor"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
