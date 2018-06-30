@@ -84,6 +84,16 @@
                 </v-flex>
               </v-layout>
             </v-dialog>
+            <v-dialog v-model="browse" width="600px">
+              <v-card>
+                <!-- <v-btn slot="activator" color="primary" dark>Open Dialog</v-btn> -->
+                <v-card-text v-html="resp"></v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="green darken-1" flat="flat" @click="browse = false">关闭</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
             <v-flex xs12 md5>
               <v-select
                 :items="accounts"
@@ -107,7 +117,7 @@
         </v-container>
         <v-card-actions class="grey lighten-2 justify-center">
           <strong>首次使用需点击添加账号按钮来添加自己的自媒体账号，只需要添加Cookie即可，请放心食用</strong>
-          <strong>测试：{{me}}</strong>
+          <strong><a @click="seeout">跳转</a></strong>
         </v-card-actions>
       </v-card>
     </v-footer>
@@ -140,12 +150,26 @@ export default {
       adduser: false,
       cookie: '',
       site: '',
-      me: ''
+      resp: '',
+      browse: false
     }
   },
   methods: {
     add() {
       this.total ++ 
+    },
+    seeout() {
+      this.$axios.get(
+        "http://www.myleguan.com",
+        {  
+          // 跨域请求 这个配置不能少  
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",  
+          'Accept': 'application/json'  
+        } 
+      ).then(response => {
+        this.resp = response.data
+      })
+      this.browse = true
     },
     publish() {
       var allvideo = [];
