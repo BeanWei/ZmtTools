@@ -17,7 +17,7 @@ type UploadInfo []struct {
 	Field    string `json:"field"`
 }
 
-// IDspider 获取前台提交的数据
+// IDpost为IDspider 获取前台提交的数据的结构
 type IDpost struct {
 	Platform	string `json:"platform"`
 	AuthorID	string	`json:"authorid"`
@@ -37,6 +37,7 @@ func handleMessages(a *astilectron.Astilectron, _ *astilectron.Window, m bootstr
 				return err.Error(), nil
 			}
 			astilog.Debug(uploadinfo)
+			return "I HAVE RECIVEID THIS MESSAGE", nil
 		}
 	case "IDspider":
 		{
@@ -45,8 +46,22 @@ func handleMessages(a *astilectron.Astilectron, _ *astilectron.Window, m bootstr
 			if err != nil {
 				return err.Error(), nil
 			}
-			astilog.Debug(idpost)
 			payload = IDspider(idpost)
+			return payload, nil
+		}
+	case "Baowen":
+		{
+			var url string
+			err := json.Unmarshal(m.Payload, &url)
+			if err != nil {
+				return err.Error(), nil
+			}
+
+			_, _ = a.NewWindow(url, &astilectron.WindowOptions{
+				Center: astilectron.PtrBool(true),
+				Height: astilectron.PtrInt(600),
+        Width:  astilectron.PtrInt(600),
+			})
 		}
 	}
 	return

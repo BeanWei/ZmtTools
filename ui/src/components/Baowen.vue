@@ -48,16 +48,6 @@
         </v-btn>
       </v-layout>
     </v-container>
-    <v-dialog v-model="browse" width="600px">
-      <v-card-title>
-        <span class="headline">{{posttitle}}</span>
-      </v-card-title>
-      <v-card-text>{{postcontent}}</v-card-text>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn color="green darken-1" flat="flat" @click="browse = false">关闭</v-btn>
-      </v-card-actions>
-    </v-dialog>
     <v-card-title style="margin-top: -70px;">
       *一点资讯、大鱼号和网易号平台不提供阅读量数据，请悉知。
       <v-spacer></v-spacer>
@@ -86,8 +76,8 @@
         <td class="text-xs-left">{{props.item.read}}</td>
         <td class="text-xs-left">{{props.item.comment}}</td>
         <td class="justify-center layout px-0">
-          <v-btn icon class="mx-0" @click="editItem(props.item.url)">
-            <v-icon color="teal">edit</v-icon>
+          <v-btn icon class="mx-0" @click="sourceItem(props.item.url)">
+            <v-icon color="teal">import_contacts</v-icon>
           </v-btn>
           <!-- <v-btn icon class="mx-0" @click="collectItem(props.item)">
             <v-icon color="red">bookmarks</v-icon>
@@ -213,7 +203,7 @@
         { text: '时间', align: 'left', sortable: false, value: 'publicTime' },
         { text: '阅读', align: 'left', sortable: false, value: 'read' },
         { text: '评论', align: 'left', sortable: false, value: 'comment' },
-        { text: '更多', sortable: false, value: 'url' }
+        { text: '原文', sortable: false, value: 'url' }
       ],
       respdata: [],
       platform: "全部",
@@ -225,10 +215,7 @@
       loading: false,
       pagenum: '',
       totalpages: 1,
-      pagechage: false,
-      browse: false,
-      posttitle: '',
-      postcontent: ''
+      pagechage: false
     }),
     methods: {
       submit() {
@@ -337,23 +324,27 @@
           this.submit()
         }
       },
-      editItem(url) {
-        this.$axios.post(
-          "http://120.35.10.209:5097/getContent",
-          {"url": url},
-          {
-            "Content-Type": "application/json",
-            "Host": "120.35.10.209:5097",
-            "Origin": "http://www.myleguan.com",
-            "Referer": "http://www.myleguan.com/lgEditor/lgEditor.html"
-          }
-        ).then(response => {
-          var jsdata = JSON.parse(response.data.data)
-          this.posttitle = jsdata.title
-          this.postcontent = jsdata.content
-        }, response => {
-          alert("出错了！")
-        })
+      sourceItem(url) {
+        // this.$axios.post(
+        //   "http://120.35.10.209:5097/getContent",
+        //   {"url": url},
+        //   {
+        //     "Content-Type": "application/json",
+        //     "Host": "120.35.10.209:5097",
+        //     "Origin": "http://www.myleguan.com",
+        //     "Referer": "http://www.myleguan.com/lgEditor/lgEditor.html"
+        //   }
+        // ).then(response => {
+        //   var jsdata = JSON.parse(response.data.data)
+        //   this.posttitle = jsdata.title
+        //   this.postcontent = jsdata.content
+        // }, response => {
+        //   alert("出错了！")
+        // })
+        astilectron.sendMessage({
+          name:"Baowen",
+          payload: url
+        }, function(message){})
       }
     },
     // created() { 

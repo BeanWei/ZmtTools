@@ -165,11 +165,11 @@
           "datefrom": this.datefrom,
           "dateto": this.dateto
         }
-        console.log(idpost)
         astilectron.sendMessage({
           name: "IDspider",
           payload: idpost
         },function(message){
+          console.log("I have received:" + message)
           this.posts = message.payload
           console.log(this.posts)
         })

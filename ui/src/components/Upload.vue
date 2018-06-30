@@ -107,6 +107,7 @@
         </v-container>
         <v-card-actions class="grey lighten-2 justify-center">
           <strong>首次使用需点击添加账号按钮来添加自己的自媒体账号，只需要添加Cookie即可，请放心食用</strong>
+          <strong>测试：{{me}}</strong>
         </v-card-actions>
       </v-card>
     </v-footer>
@@ -139,6 +140,7 @@ export default {
       adduser: false,
       cookie: '',
       site: '',
+      me: ''
     }
   },
   methods: {
@@ -162,7 +164,8 @@ export default {
         name: "Upload",
         payload: allvideo
       },function(message){
-        alert("后台正在处理")
+        this.me = message
+        console.log("后台说：" + message)
       })
     }
   }
