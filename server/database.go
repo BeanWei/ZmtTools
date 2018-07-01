@@ -96,6 +96,20 @@ func newsquery(field string) []*Newsinfo {
 	return allnews
 }
 
+//判断是否已存在该新闻
+func exist(db *sql.DB, url string) bool {
+	rows, err := db.Query("SELECT * FROM newsinfo WHERE url=?", url)
+	if err != nil {
+		log.Fatal("Line103-Error: ", err)
+		return false
+	}
+	if rows != nil {
+		return true
+	} else {
+		return false
+	}
+}
+
 // newsdelete 清空数据库表 TODO: 暂支持手动清空
 func newsdelete() error {
 	db := dbinit()
