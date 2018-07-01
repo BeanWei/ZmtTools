@@ -169,3 +169,56 @@ func jxnews() {
 
 	queues.Run(c)
 }
+
+// ynet 北青网，爬取各个领域前1000条新闻
+func ynet() {
+
+	baseurl := "http://m.ynet.com/data/getlistinfo/"
+
+	c := colly.NewCollector()
+	extensions.RandomUserAgent(c)
+
+	queues, _ := queue.New(
+		520, // Number of consumer threads
+		&queue.InMemoryQueueStorage{MaxSize: 10000}, // Use default queue storage
+	)
+
+	c.OnRequest(func(r *colly.Request) {
+		r.Headers.Set("Host", "zixun.ynet.com")
+		r.Headers.Set("Referer", "http://www.ynet.com")
+		log.Println("Visiting: ", r.URL.String())
+	})
+
+	c.OnResponse(func(r *colly.Response) {
+		jsonbyte := r.Body
+		field := jsoniter.Get(jsonbyte, "channelName").ToString()
+		for index := 0; index < 50; index++ {
+			url := jsoniter.Get(jsonbyte, "articles", index, "newsUrl").ToString()
+			title := jsoniter.Get(jsonbyte, "articles", index, "title").ToString()
+			author := jsoniter.Get(jsonbyte, "articles", index, "media").ToString()
+			publishtime := jsoniter.Get(jsonbyte, "articles", index, "updateTime").ToString()
+			cover := jsoniter.Get(jsonbyte, "articles", index, "images", 0, "url").ToString()
+
+			//数据入库
+			check = exist(db, url)
+			if _, ok := check.(bool); ok {
+				log.Println("此新闻已入库: ", url)
+				continue
+			} else {
+				err := newsadd(db, field, title, author, publishtime, 0, 0, url, cover)
+				if err != nil {
+					log.Fatal("Line210-Error: ", err)
+				}
+			}
+		}
+	})
+
+	idlist := []int{30, 4, 11, 37, 19, 1, 24, 12, 2, 5, 3, 23, 13, 10, 8, 18, 26, 16, 25, 15, 27, 36, 28, 29, 6, 20}
+	for _, id := range idlist {
+		for page := 1; page < 21; page++ {
+			queues.AddURL(fmt.Sprintf("%s?channelId=%d&page=%d", baseurl, id, page))
+		}
+	}
+
+	queues.Run(c)
+}
