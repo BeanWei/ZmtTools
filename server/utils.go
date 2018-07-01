@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -50,6 +51,10 @@ func dateparse(datestr string) (string, error) {
 
 	} else if datestr == "前天" {
 		return time.Now().Add(-time.Hour * 24 * 2).Format("2006-01-02 15:04:05"), nil
+
+	} else if strings.Contains(datestr, "-") && len(datestr) == 5 {
+		return fmt.Sprintf("%d-%s 00:00:00", time.Now().Year(), datestr), nil
+
 	} else {
 		//panic(fmt.Sprintf("不支持此时间格式的解析=> %s", datestr))
 		return datestr, nil
