@@ -15,6 +15,9 @@ import (
 //初始化数据库
 var db = dbinit()
 
+// 检查准备入库的新闻是否已存在
+var check interface{}
+
 // tencent 腾讯新闻 TODO: 暂时只分析了娱乐版块
 func tencent() {
 
@@ -40,11 +43,16 @@ func tencent() {
 			comments := jsoniter.Get(jsonbyte, "data", index, "comment_num").ToInt()
 			cover := jsoniter.Get(jsonbyte, "data", index, "bimg").ToString()
 			//数据入库
-			err := newsadd(db, field, title, author, publishtime, views, comments, url, cover)
-			if err != nil {
-				log.Fatal("Line45-Error: ", err)
+			check = exist(db, url)
+			if _, ok := check.(bool); ok {
+				log.Println("此新闻已入库: ", url)
+				continue
+			} else {
+				err := newsadd(db, field, title, author, publishtime, views, comments, url, cover)
+				if err != nil {
+					log.Fatal("Line51-Error: ", err)
+				}
 			}
-
 		}
 	})
 
@@ -89,9 +97,14 @@ func zaker() {
 				cover = "http://zkres.myzaker.com/static/zaker_web2/img/logo.png?v=20170726"
 			}
 			//数据入库
-			err = newsadd(db, field, title, author, publishtime, 0, 0, url, cover)
-			if err != nil {
-				log.Fatal("Line94-Error: ", err)
+			check = exist(db, url)
+			if _, ok := check.(bool); ok {
+				log.Println("此新闻已入库: ", url)
+			} else {
+				err := newsadd(db, field, title, author, publishtime, 0, 0, url, cover)
+				if err != nil {
+					log.Fatal("Line105-Error: ", err)
+				}
 			}
 		})
 	})
