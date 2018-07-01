@@ -46,7 +46,7 @@
       ```
         id	2363445
         classname	娱乐
-        titleurl	/p/20180701/2363445.html
+        titleurl	/p/20180701/2363445.html   //目标url：http://toutiao.jxnews.com.cn/p/20180701/2363445.html
         newstime	30分钟前
         timestamp	1530437619
         cateid	48
