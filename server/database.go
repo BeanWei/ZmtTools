@@ -21,11 +21,11 @@ func dbinit() *sql.DB {
 			 field	TEXT	NULL,
 			 title TEXT NULL,
 			 author	TEXT NULL,
-			 authorid	TEXT NULL,
 			 publishtime DATE NULL,
 			 views	INT	NULL,
 			 comments	INT	NULL,
-			 url	TEXT	NULL
+			 url	TEXT	NULL,
+			 cover	TEXT	NULL
 	 );
 	 `
 
@@ -34,24 +34,24 @@ func dbinit() *sql.DB {
 	return db
 }
 
-func newsadd(db *sql.DB, field string, title string, author string, authorid string, publishtime string, views int, comments int, url string) error {
+func newsadd(db *sql.DB, field string, title string, author string, publishtime string, views int, comments int, url string, cover string) error {
 
 	//插入数据
 	stmt, err := db.Prepare(
-		"INSERT INTO newsinfo(field, title, author, authorid, publishtime, views, comments, url) values(?, ?, ?, ?, ?, ?, ?, ?)")
+		"INSERT INTO newsinfo(field, title, author, publishtime, views, comments, url, cover) values(?, ?, ?, ?, ?, ?, ?, ?)")
 	if err != nil {
-		log.Fatal("Line44-Error: ", err)
+		log.Fatal("Line43-Error: ", err)
 		return err
 	}
 	_, err = stmt.Exec(
 		field,
 		title,
 		author,
-		authorid,
 		publishtime,
 		views,
 		comments,
-		url)
+		url,
+		cover)
 	if err != nil {
 		log.Fatal("Line56-Error: ", err)
 		return err
@@ -66,11 +66,11 @@ type Newsinfo struct {
 	field       string
 	title       string
 	author      string
-	authorid    string
 	publishtime string
 	views       int
 	comments    int
 	url         string
+	cover       string
 }
 
 // newsquery 数据库查询
@@ -86,9 +86,9 @@ func newsquery(field string) []*Newsinfo {
 	allnews := []*Newsinfo{}
 	for rows.Next() {
 		n := new(Newsinfo)
-		err := rows.Scan(&n.field, &n.title, &n.author, &n.authorid, &n.publishtime, &n.views, &n.comments, &n.url)
+		err := rows.Scan(&n.field, &n.title, &n.author, &n.publishtime, &n.views, &n.comments, &n.url, &n.cover)
 		if err != nil {
-			log.Fatal("Line89-Error: ", err)
+			log.Fatal("Line91-Error: ", err)
 			return nil
 		}
 		allnews = append(allnews, n)
@@ -101,7 +101,7 @@ func newsdelete() error {
 	db := dbinit()
 	stmt, err := db.Prepare("DELETE FROM newsinfo")
 	if err != nil {
-		log.Fatal("Line105-Error: ", err)
+		log.Fatal("Line104-Error: ", err)
 		return err
 	}
 	_, err = stmt.Exec()
