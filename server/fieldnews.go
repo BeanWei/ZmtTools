@@ -50,7 +50,7 @@ func tencent() {
 			} else {
 				err := newsadd(db, field, title, author, publishtime, views, comments, url, cover)
 				if err != nil {
-					log.Fatal("Line51-Error: ", err)
+					log.Fatal("Line53-Error: ", err)
 				}
 			}
 		}
@@ -103,13 +103,66 @@ func zaker() {
 			} else {
 				err := newsadd(db, field, title, author, publishtime, 0, 0, url, cover)
 				if err != nil {
-					log.Fatal("Line105-Error: ", err)
+					log.Fatal("Line106-Error: ", err)
 				}
 			}
 		})
 	})
 
 	pagelist := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 959, 981, 1014, 1039, 1067, 10376, 10386, 10530, 10802, 11195}
+	for _, i := range pagelist {
+		queues.AddURL(fmt.Sprintf("%s%d", baseurl, i))
+	}
+
+	queues.Run(c)
+}
+
+// jxnews 头条新闻，来自江西的一个新闻聚合站点，爬取每个领域的前一百条新闻
+func jxnews() {
+
+	baseurl := "http://toutiao.jxnews.com.cn/m/channelnewslist.php?pagesize=100&cate="
+
+	c := colly.NewCollector()
+	extensions.RandomUserAgent(c)
+
+	queues, _ := queue.New(
+		32, // Number of consumer threads
+		&queue.InMemoryQueueStorage{MaxSize: 10000}, // Use default queue storage
+	)
+
+	c.OnRequest(func(r *colly.Request) {
+		r.Headers.Set("Host", "toutiao.jxnews.com.cn")
+		r.Headers.Set("Referer", "http://toutiao.jxnews.com.cn")
+		log.Println("Visiting: ", r.URL.String())
+	})
+
+	c.OnResponse(func(r *colly.Response) {
+		jsonbyte := r.Body
+		for index := 0; index < 100; index++ {
+			field := jsoniter.Get(jsonbyte, index, "classname").ToString()
+			url := fmt.Sprintf("http://toutiao.jxnews.com.cn%s", jsoniter.Get(jsonbyte, index, "titleurl").ToString())
+			title := jsoniter.Get(jsonbyte, index, "title").ToString()
+			author := jsoniter.Get(jsonbyte, index, "befrom").ToString()
+			publishtime, err := dateparse(jsoniter.Get(jsonbyte, index, "newstime").ToString())
+			if err != nil {
+				log.Fatal(err)
+			}
+			cover := jsoniter.Get(jsonbyte, index, "titlepic").ToString()
+			//数据入库
+			check = exist(db, url)
+			if _, ok := check.(bool); ok {
+				log.Println("此新闻已入库: ", url)
+				continue
+			} else {
+				err := newsadd(db, field, title, author, publishtime, 0, 0, url, cover)
+				if err != nil {
+					log.Fatal("Line159-Error: ", err)
+				}
+			}
+		}
+	})
+
+	pagelist := []int{47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 71, 75, 76, 77, 78, 79, 80, 81, 83}
 	for _, i := range pagelist {
 		queues.AddURL(fmt.Sprintf("%s%d", baseurl, i))
 	}
