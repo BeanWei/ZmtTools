@@ -73,7 +73,7 @@ type Newsinfo struct {
 	cover       string
 }
 
-// newsquery 数据库查询
+// newsquery 根据选择的领域进行数据库查询筛选
 func newsquery(field string) []*Newsinfo {
 	db := dbinit()
 	rows, err := db.Query("SELECT * FROM newsinfo WHERE field=?", field)
@@ -94,6 +94,27 @@ func newsquery(field string) []*Newsinfo {
 		allnews = append(allnews, n)
 	}
 	return allnews
+}
+
+// domains 查询数据库中的所有领域
+func domains() []string {
+	db := dbinit()
+	rows, err := db.Query("SELECT field FROM newsinfo")
+	if err != nil {
+		log.Fatal("Line104-Error: ", err)
+		return nil
+	}
+	results := []string{}
+	for rows.Next() {
+		var field string
+		err = rows.Scan(&field)
+		if err != nil {
+			log.Fatal("Line112-Error: ", err)
+			return nil
+		}
+		results = append(results, field)
+	}
+	return results
 }
 
 //判断是否已存在该新闻
