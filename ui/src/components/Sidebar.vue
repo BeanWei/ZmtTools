@@ -23,7 +23,7 @@
         <v-list dense class="pt-0">
           <v-list-tile v-for="item in items" :key="item.title" @click="routeToItem(item.itemVue)">
             <v-list-tile-action>
-              <v-icon>{{ item.icon }}</v-icon>
+              <v-icon color="item.color">{{ item.icon }}</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
               <v-list-tile-title>{{ item.title }}</v-list-tile-title>
@@ -59,14 +59,13 @@ export default {
         marginLeft: '-200px'
       },
       items: [
-        { title: '主页', icon: 'dashboard', itemVue: 'Main' },
-        { title: '十万爆文', icon: 'dashboard', itemVue: 'Baowen' },
-        { title: '批量上传', icon: 'question_answer', itemVue: 'Upload' },
-        { title: '定向获取', icon: 'dashboard', itemVue: 'IDspider' },
-        { title: '资源采集', icon: 'dashboard', itemVue: 'Allspider' },
-        { title: '伪原创', icon: 'dashboard', itemVue: 'Editor' },
-        { title: '今日最热', icon: 'dashboard', itemVue: 'Main' },
-        { title: '关于', icon: 'dashboard', itemVue: 'Login' }
+        { title: '主页', icon: 'home', color: 'light-blue', itemVue: 'Main' },
+        { title: '十万爆文', icon: 'attach_money', color: 'amber', itemVue: 'Baowen' },
+        { title: '新闻头条', icon: 'whatshot', color: 'red', itemVue: 'News' },
+        { title: '定向获取', icon: 'pets', color: 'blue-grey', itemVue: 'IDspider' },
+        { title: '批量上传', icon: 'cloud_upload', color: 'teal', itemVue: 'Upload' },
+        { title: '伪原创', icon: 'create', color: 'green', itemVue: 'Editor' },
+        { title: '关于', icon: 'free_breakfast', color: 'deep-orange', itemVue: 'Login' }
       ],
     }
   },

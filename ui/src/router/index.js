@@ -6,7 +6,8 @@ import Router from 'vue-router'
 const Main = () => import('../components/Main')
 const Login = () => import('../components/Login')
 const Upload = () => import('../components/Upload')
-const Allspider = () => import('../components/Allspider')
+// const Allspider = () => import('../components/Allspider')
+const News = () => import('../components/News.vue')
 const IDspider = () => import('../components/IDspider')
 const Baowen  = () => import('../components/Baowen.vue')
 const Editor = () => import('../components/Editor.vue')
@@ -37,9 +38,9 @@ export default new Router({
           meta: {keepAlive: true}
         },
         {
-          path:'allspider/',
-          name: 'Allspider',
-          component: Allspider,
+          path:'news/',
+          name: 'News',
+          component: News,
           meta: {keepAlive: true}
         },
         {
