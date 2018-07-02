@@ -102,22 +102,27 @@ export default {
       browse: false,
       currentItem: 'tab-0',
       mainitems: ["热点","科技","娱乐","搞笑","财经","游戏"],
-      allitems: ["热点","科技","娱乐","搞笑","财经","游戏", "足球","历史","电影","时政","健康","教育"],
-      newslist: [
-        {url: "", cover:"https://www.baidu.com/img/bd_logo1.png", title: "詹姆斯与湖人队签订4年1.54亿美元合同", author:"北京青年报-北青网", read:"520", comment:"66", publishtime:"2018-07-02 08:37:45"},
-        {url: "", cover:"https://www.baidu.com/img/bd_logo1.png", title: "詹姆斯与湖人队签订4年1.54亿美元合同", author:"北京青年报-北青网", read:"520", comment:"66", publishtime:"2018-07-02 08:37:45"},
-        {url: "", cover:"https://www.baidu.com/img/bd_logo1.png", title: "詹姆斯与湖人队签订4年1.54亿美元合同", author:"北京青年报-北青网", read:"520", comment:"66", publishtime:"2018-07-02 08:37:45"},
-        {url: "", cover:"https://www.baidu.com/img/bd_logo1.png", title: "詹姆斯与湖人队签订4年1.54亿美元合同", author:"北京青年报-北青网", read:"520", comment:"66", publishtime:"2018-07-02 08:37:45"},
-        {url: "", cover:"https://www.baidu.com/img/bd_logo1.png", title: "詹姆斯与湖人队签订4年1.54亿美元合同", author:"北京青年报-北青网", read:"520", comment:"66", publishtime:"2018-07-02 08:37:45"},
-        {url: "", cover:"https://www.baidu.com/img/bd_logo1.png", title: "詹姆斯与湖人队签订4年1.54亿美元合同", author:"北京青年报-北青网", read:"520", comment:"66", publishtime:"2018-07-02 08:37:45"}
-      ]
+      allitems: [],
+      newslist: []
     }
   },
   watch: {
     "currentItem": function(val, oldval) {
       const nowitem = val.slice(4)
-      console.log(nowitem)
+      astilectron.sendMessage({
+        name: "News",
+        payload: nowitem
+      },function(message){
+        this.newslist = message.payload
+      })
     }
+  },
+  created() { 
+    astilectron.sendMessage({
+      name: "Domains",
+    }, function(message){
+      this.allitems = message.payload
+    })
   },
   methods: {
     more(item) {
