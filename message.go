@@ -1,15 +1,14 @@
 package main
 
 import (
-	
 	"encoding/json"
 
-	"github.com/asticode/go-astilog"
 	"github.com/ZEROKISEKI/go-astilectron-bootstrap"
 	"github.com/asticode/go-astilectron"
+	"github.com/asticode/go-astilog"
 )
 
-// UploadInfo 视频上传信息接口   
+// UploadInfo 视频上传信息接口
 type UploadInfo []struct {
 	Title    string `json:"title"`
 	Describe string `json:"describe"`
@@ -19,11 +18,11 @@ type UploadInfo []struct {
 
 // IDpost为IDspider 获取前台提交的数据的结构
 type IDpost struct {
-	Platform	string `json:"platform"`
-	AuthorID	string	`json:"authorid"`
-	Readlimit string	`json:"readlimit"`
-	Datefrom	string	`json:"datefrom"`
-	Dateto		string	`json:"dateto"`
+	Platform  string `json:"platform"`
+	AuthorID  string `json:"authorid"`
+	Readlimit string `json:"readlimit"`
+	Datefrom  string `json:"datefrom"`
+	Dateto    string `json:"dateto"`
 }
 
 // handleMessages handles messages
@@ -60,8 +59,23 @@ func handleMessages(a *astilectron.Astilectron, _ *astilectron.Window, m bootstr
 			_, _ = a.NewWindow(url, &astilectron.WindowOptions{
 				Center: astilectron.PtrBool(true),
 				Height: astilectron.PtrInt(600),
-        Width:  astilectron.PtrInt(600),
+				Width:  astilectron.PtrInt(600),
 			})
+		}
+	case "News":
+		{
+			var field string
+			err := json.Unmarshal(m.Payload, &field)
+			if err != nil {
+				return err.Error(), nil
+			}
+			payload = newsquery(field)
+			return payload, nil
+		}
+	case "Domains":
+		{
+			payload = domains()
+			return payload, nil
 		}
 	}
 	return
