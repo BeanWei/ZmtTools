@@ -201,21 +201,6 @@ export default {
 }
 </script>
 <style scoped>
-  #file{position: absolute;clip: rect(0,0,0,0);}
-  label {
-    width: 80px;
-    height: 34px;
-    border: 1px solid #00a5e0;
-    background-color: #00a5e0;
-    color: #fff;
-    display: inline-block;
-    line-height: 34px;
-    font-size: 14px;
-    text-align: center;
-    cursor: pointer;
-    z-index: 2;
-    border-radius: 4px;
-  }
   .upload_warp_img_div_del {
     position: absolute;
     top: 6px;
