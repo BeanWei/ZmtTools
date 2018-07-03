@@ -4,7 +4,7 @@
     style="max-width: 100%; margin: auto; height: 100%;"
     class="grey lighten-3"
   >
-    <uploadComponent ref="uploadComponent"></uploadComponent>
+    <uploadComponent></uploadComponent>
     <v-footer class="pa-3" style="margin-top: 50px; bottom: 0px;" height="auto">
       <v-card flat tile class="flex">
         <v-container fluid grid-list-md>
@@ -127,20 +127,26 @@ export default {
       site: '',
     }
   },
+  computed: {
+    videos: function() {
+      return this.$store.getters.getVideos
+    }
+  },
   methods: {
     publish() {
-      var allvideo = [];
-      for (var data in this.$refs.uploadComponent.videos) {
-        var videoinfo = {};
-        videoinfo = {
-          "filename": data.filename,
-          "title": data.title,
-          "describe": data.describe,
-          "tags": data.tags,
-          "field": data.field
-        }
-        allvideo.push(videoinfo)
-      }
+      // var allvideo = [];
+      // for (var data in this.videos) {
+      //   var videoinfo = {};
+      //   videoinfo = {
+      //     "filename": data.filename,
+      //     "title": data.title,
+      //     "describe": data.describe,
+      //     "tags": data.tags,
+      //     "field": data.field
+      //   }
+      //   allvideo.push(videoinfo)
+      // }
+      let allvideo = this.videos.filter(() => true)
       console.log(allvideo)
       astilectron.sendMessage({
         name: "Upload",

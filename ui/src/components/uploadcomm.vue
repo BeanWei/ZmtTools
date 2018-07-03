@@ -45,25 +45,25 @@
                   <v-text-field
                   name="title"
                   label="标题"
-
+                  v-model="videos[index].title"
                   ></v-text-field>
               </v-flex>
               <v-flex xs12 sm3 style="margin-right: 7px;">
                   <v-text-field
                   name="describe"
                   label="简介"
-
+                  v-model="videos[index].describe"
                   ></v-text-field>
               </v-flex>
               <v-flex xs12 sm3 style="margin-right: 7px;">
                   <v-text-field
                   name="tags"
                   label="标签(逗号隔开)"
-
+                  v-model="videos[index].tags"
                   ></v-text-field>
               </v-flex>
               <v-flex xs12 sm1>
-                  <v-select :items="items"  label="领域"></v-select>
+                  <v-select :items="items" v-model="videos[index].field" label="领域"></v-select>
               </v-flex>
             </v-layout>
           </v-card>
@@ -87,10 +87,23 @@ export default {
       videos: [],
       videoList: [],
       size: 0,
-      // title: '',
-      // describe: '',
-      // tags: '',
-      // field: ''
+    }
+  },
+  watch: {
+    videoList: function() {
+      for (var i = this.videos.length + 1; i <= this.videoList.length; i ++) {
+        var obj = {
+          filename: '',
+          title: '',
+          describe: '',
+          tags: '',
+          field: '',
+        };
+        obj.filename = this.videoList[i-1].file.name
+        this.videos.push(obj)
+      } 
+      console.log(this.videos)
+      this.$store.dispatch("setVideos", this.videos)
     }
   },
   methods: {
