@@ -36,11 +36,11 @@
         <v-flex xs12 sm12>
           <v-card v-for="(item,index) of videoList" style="margin-top: 10px;">
             <v-layout row wrap>
-              <v-flex xs12 sm12>
-                <p>附件名：{{item.file.name}}</p>
-              </v-flex>
+              <v-card-text>
+                <p class="text-sm-left">附件名：{{item.file.name}}</p>
+              </v-card-text>
             </v-layout>
-            <v-layout row wrap>
+            <v-layout row wrap style="margin-top: -28px;">
               <v-flex xs12 sm4 style="margin-right: 7px; margin-left: 7px;">
                   <v-text-field
                   name="title"
