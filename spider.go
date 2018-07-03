@@ -242,7 +242,7 @@ func zaker() {
 		e.ForEach("#infinite_scroll a", func(_ int, el *colly.HTMLElement) {
 			url := el.Attr("href")
 			title := el.ChildText(".title")
-			author := strings.Split(el.ChildText(".author"), " ")[0]
+			author := el.ChildText(".author span:first-child")
 			//辅助函数(utils.go中)，解析汉字时间
 			publishtime, err := dateparse(el.ChildText(".date"))
 			if err != nil {
