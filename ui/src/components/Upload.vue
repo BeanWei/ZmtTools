@@ -4,23 +4,9 @@
     style="max-width: 100%; margin: auto; height: 100%;"
     class="grey lighten-3"
   >
-    <div v-for="cmpt in total">
-      <uploadComponent ref="uploadComponent"></uploadComponent>
-    </div>
+    <uploadComponent ref="uploadComponent"></uploadComponent>
     <v-footer class="pa-3" style="margin-top: 50px; bottom: 0px;" height="auto">
       <v-card flat tile class="flex">
-        <v-btn
-          absolute
-          dark
-          fab
-          small
-          top
-          right
-          color="pink"
-          @click="add()"
-          >
-          <v-icon>add</v-icon>
-      </v-btn>
         <v-container fluid grid-list-md>
           <v-layout row wrap>
             <v-btn 
@@ -142,15 +128,12 @@ export default {
     }
   },
   methods: {
-    add() {
-      this.total ++ 
-    },
     publish() {
       var allvideo = [];
-      for (var index = 1; index <= this.total; index++) {
+      for (var data in this.$refs.uploadComponent.videos) {
         var videoinfo = {};
-        data = this.$refs.uploadComponent[index-1].video
         videoinfo = {
+          "filename": data.filename,
           "title": data.title,
           "describe": data.describe,
           "tags": data.tags,
