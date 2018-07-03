@@ -7,6 +7,8 @@ import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 
+import store from './store/store.js'
+
 
 Vue.use(Vuetify)
 
@@ -23,6 +25,7 @@ Vue.config.productionTip = isDebug_mode
 new Vue({
   el: '#app',
   router,
+  store,
   render: h => h(App)
 })
 
