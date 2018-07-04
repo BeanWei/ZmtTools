@@ -6,7 +6,7 @@
           <v-flex xs12 sm12>
             <v-radio-group v-model="sites" row>
               <v-radio
-                v-for="(site, i) in ['大鱼号', '百家号', '企鹅号', '头条号']"
+                v-for="(site, i) in ['大鱼号', '百家号', '企鹅号', '头条号', '十万爆文']"
                 :key="i"
                 :value="site"
                 :label="site"
