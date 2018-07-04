@@ -8,6 +8,9 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"io/ioutil"
+	"net/http"
+	"net/url"
 
 	"github.com/gocolly/colly"
 	"github.com/gocolly/colly/extensions"
@@ -45,6 +48,9 @@ func IDspider(reqinfo *IDpost) (results []Result) {
 		return nil
 	case "头条号":
 		return nil
+	case "十万爆文":
+		results := Leguan(authorid, readlimit, datefrom, dateto)
+		return results
 	default:
 		return nil
 	}
@@ -54,6 +60,7 @@ func IDspider(reqinfo *IDpost) (results []Result) {
 
 /*根据前台传入的指定作者ID进行定向爬取文章*/
 
+/*	*		*		*		*			大鱼号		*		 *		*/
 // Resp 响应结构
 type Resp struct {
 	Data []Production `json:"data"`
@@ -65,7 +72,6 @@ type Production struct {
 	Type        int    `json:"format_type"`  //作品类型
 	Category    string `json:"category"`     //作品分类
 	Title       string `json:"title"`        //作品标题
-	Coverlink   string `json:"cover_url"`    //封面链接
 	Publishtime string `json:"published_at"` //发表时间
 }
 
@@ -149,7 +155,6 @@ func Dayu(AuthorID, Readlimit, Timefrom, Timeto string) (results []Result) {
 				ctx.Put("type", strconv.Itoa(oneproduction.Type))
 				ctx.Put("category", oneproduction.Category)
 				ctx.Put("title", oneproduction.Title)
-				ctx.Put("coverlink", oneproduction.Coverlink)
 				ctx.Put("publishtime", timel)
 				getHotCollector.Request("GET", targetURL, nil, ctx, nil)
 				log.Println("Visiting: ", targetURL)
@@ -166,6 +171,113 @@ func Dayu(AuthorID, Readlimit, Timefrom, Timeto string) (results []Result) {
 	return
 
 }
+
+/*	*		*		*		*		乐观号平台		*		 *		*/
+// 乐观号平台 json 数据结构的构造
+type Obj struct {
+	Content []LeguanObj `json:"content"`
+}
+type LeguanObj struct {
+	ID          string `json:"id"`
+	Title       string `json:"title"`
+	URL         string `json:"url"`
+	Platform    string `json:"platform"`
+	Account     string `json:"account"`
+	Domain      string `json:"domain"`
+	Status      int    `json:"status"`
+	Read        int    `json:"read"`
+	Like        int    `json:"like"`
+	Comment     int    `json:"comment"`
+	Favor       int    `json:"favor"`
+	Origin      int    `json:"origin"`
+	MediaType   int    `json:"mediaType"`
+	Coverpic    string `json:"coverPic"`
+	Sn          string `json:"sn"`
+	Publictime  string `json:"publicTime"`
+	Createtime  string `json:"createTime"`
+	UpdateTime  string `json:"updateTime"`
+	Lptime      int64  `json:"lptime"`
+	IsCrawl     int    `json:"isCrawl"`
+	Crawl       int    `json:"crawl"`
+	Area        string `json:"area"`
+	Province    string `json:"province"`
+	ChildDomain string `json:"childDomain"`
+	UserID      string `json:"userId"`
+	App         int    `json:"app"`
+	Apponline   int    `json:"appOnline"`
+	Priority    int    `json:"priority"`
+	Social      int    `json:"social"`
+	Havehtml    int    `json:"haveHtml"`
+	ES          int    `json:"es"`
+	Logo        string `json:"logo"`
+	Nickname    string `json:"nickName"`
+}
+
+// Leguan 乐观号平台的爬取
+func Leguan(AuthorID, Readlimit, Timefrom, Timeto string) (results []Result) {
+	results = []Result{}
+	relimit, err := strconv.Atoi(Readlimit)
+	tfrom, err := time.Parse("2006-01-02 15:04:05", Timefrom)
+	tto, err := time.Parse("2006-01-02 15:04:05", Timeto)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	req, err := http.PostForm(
+		"http://www.myleguan.com/lg_res/focus/flr/gaibui",
+		url.Values{
+			"ids":          {AuthorID},
+			"lgCustomerId": {"1000183092"},
+			"lptimeOrder":  {"DESC"},
+			"size":         {"10000"}})
+
+	if err != nil {
+		log.Println(err.Error())
+	}
+	defer req.Body.Close()
+
+	body, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		log.Println(err.Error())
+	}
+
+	reObj := jsoniter.Get(body, "reObj").ToString()
+
+	content := &Obj{}
+	err = jsoniter.UnmarshalFromString(reObj, content)
+	if err != nil {
+		log.Fatal(err)
+	}
+	result := Result{}
+	for _, item := range content.Content {
+		result.Domain = item.Domain
+		result.Title = item.Title
+		result.PublicTime = item.Publictime
+		result.Read = item.Read
+		result.Comment = item.Comment
+		result.Srcurl = item.URL
+
+		if item.MediaType == 1 {
+			result.Type = "图文"
+		} else if item.MediaType == 2 {
+			result.Type = "视频"
+		} else {
+			result.Type = "未知"
+		}
+
+		timeline, err := time.Parse("2006-01-02 15:04:05", result.PublicTime)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if relimit <= result.Read && tfrom.Before(timeline) && tto.After(timeline) {
+			results = append(results, result)
+		}
+	}
+	return results
+}
+
+
 
 /*==========================================================================================*/
 
