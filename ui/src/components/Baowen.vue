@@ -71,6 +71,7 @@
         <td class="text-xs-left">{{props.item.platform}}</td>
         <td class="text-xs-left">{{props.item.title}}</td>
         <td class="text-xs-left">{{props.item.nickName}}</td>
+        <td class="text-xs-left">{{props.item.userId}}</td>
         <td class="text-xs-left">{{props.item.domain}}</td>
         <td class="text-xs-left">{{props.item.publicTime}}</td>
         <td class="text-xs-left">{{props.item.read}}</td>
@@ -199,6 +200,7 @@
         { text: '平台', align: 'left', sortable: false, value: 'platform' },
         { text: '标题', align: 'left', sortable: false, value: 'title' },
         { text: '作者', align: 'left', sortable: false, value: 'nickName' },
+        { text: '作者ID', align: 'left', sortable: false, value: 'userId' },
         { text: '领域', align: 'left', sortable: false, value: 'domain' },
         { text: '时间', align: 'left', sortable: false, value: 'publicTime' },
         { text: '阅读', align: 'left', sortable: false, value: 'read' },
@@ -288,7 +290,8 @@
             data.platform = objlist[item].platform
             data.title = objlist[item].title
             data.url = objlist[item].url
-            data.nickName = objlist[item].nickName
+            data.nickName = objlist[item].nickName 
+            data.userId = objlist[item].userId
             data.domain = objlist[item].domain
             data.publicTime = objlist[item].publicTime
             data.read = objlist[item].read
@@ -329,22 +332,6 @@
         }
       },
       sourceItem(url) {
-        // this.$axios.post(
-        //   "http://120.35.10.209:5097/getContent",
-        //   {"url": url},
-        //   {
-        //     "Content-Type": "application/json",
-        //     "Host": "120.35.10.209:5097",
-        //     "Origin": "http://www.myleguan.com",
-        //     "Referer": "http://www.myleguan.com/lgEditor/lgEditor.html"
-        //   }
-        // ).then(response => {
-        //   var jsdata = JSON.parse(response.data.data)
-        //   this.posttitle = jsdata.title
-        //   this.postcontent = jsdata.content
-        // }, response => {
-        //   alert("出错了！")
-        // })
         astilectron.sendMessage({
           name:"Urlwindow",
           payload: url
