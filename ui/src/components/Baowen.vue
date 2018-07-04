@@ -7,7 +7,7 @@
           <v-select
             :items="platformlist"
             v-model="platform" 
-            style="margin-top: -25px;"
+            style="margin-top: -16px;"
           ></v-select>
         </v-flex>
         <v-flex xs12 sm2>
@@ -15,7 +15,7 @@
           <v-select
             :items="domainlist"
             v-model="domain"  
-            style="margin-top: -25px;"
+            style="margin-top: -16px;"
           ></v-select>
         </v-flex>
         <v-flex xs12 sm2>
@@ -23,7 +23,7 @@
           <v-select
             :items="sortwaylist"
             v-model="sortway" 
-            style="margin-top: -25px;"
+            style="margin-top: -16px;"
           ></v-select>
         </v-flex>
         <v-flex xs12 sm2>
@@ -31,7 +31,7 @@
           <v-select
             :items="totalviewlist"
             v-model="totalview"  
-            style="margin-top: -25px;"
+            style="margin-top: -16px;"
           ></v-select>
         </v-flex>
         <v-flex xs12 sm2>
@@ -39,10 +39,10 @@
           <v-select
             :items="timerangelist"
             v-model="timerange" 
-            style="margin-top: -25px;"
+            style="margin-top: -16px;"
           ></v-select>
         </v-flex>
-        <v-btn color="blue-grey" class="white--text" style="margin-top: 12px;" @click="submit">
+        <v-btn color="blue-grey" class="white--text" style="margin-top: -1px;" @click="submit">
           提交
           <v-icon right dark>cloud_download</v-icon>
         </v-btn>
