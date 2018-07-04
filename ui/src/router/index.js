@@ -1,16 +1,22 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 // 全加载
-// import Index from '../components/Index'
-// 懒加载
+// import Main from '../components/Main'
+// import Login from '../components/Login'
+// import Upload from '../components/Upload'
+// import News from '../components/News.vue'
+// import IDspider from '../components/IDspider'
+// import Baowen  from '../components/Baowen.vue'
+// import Editor from '../components/Editor.vue'
+//懒加载
 const Main = () => import('../components/Main')
 const Login = () => import('../components/Login')
 const Upload = () => import('../components/Upload')
-// const Allspider = () => import('../components/Allspider')
 const News = () => import('../components/News.vue')
 const IDspider = () => import('../components/IDspider')
 const Baowen  = () => import('../components/Baowen.vue')
 const Editor = () => import('../components/Editor.vue')
+
 
 Vue.use(Router)
 
@@ -18,12 +24,15 @@ export default new Router({
   routes: [
     {
       path: '/',
-      component: Login
+      name: 'Login',
+      component: Login,
+      meta: {keepAlive: false},
     },
     {
       path: '/login',
       name: 'Login',
-      component: Login
+      component: Login,
+      meta: {keepAlive: false},
     },
     {
       path: '/main',
