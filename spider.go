@@ -108,7 +108,7 @@ func Dayu(AuthorID, Readlimit, Timefrom, Timeto string) (results []Result) {
 		//TODO: 获取大鱼号图文的评论数
 		result.Comment = 0
 		id := resp.Request.Ctx.Get("id")
-		result.Srcurl = fmt.Sprintf("html: http://a.mp.uc.cn/article.html?uc_param_str=frdnsnpfvecpntnwprdssskt&from=media#!wm_cid=%s", id)
+		result.Srcurl = fmt.Sprintf("http://a.mp.uc.cn/article.html?wm_cid=%s", id)
 		result.Type = resp.Request.Ctx.Get("type")
 		result.Domain = resp.Request.Ctx.Get("category")
 		result.Title = resp.Request.Ctx.Get("title")
@@ -139,7 +139,7 @@ func Dayu(AuthorID, Readlimit, Timefrom, Timeto string) (results []Result) {
 			if err != nil {
 				log.Fatal(err)
 			}
-			if tfrom.Before(timeline) && tto.Before(timeline) {
+			if tfrom.Before(timeline) && tto.After(timeline) {
 				id := oneproduction.ID
 				timel := timeline.Format("2006-01-02 15:04:05")
 
