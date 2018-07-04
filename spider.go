@@ -115,10 +115,20 @@ func Dayu(AuthorID, Readlimit, Timefrom, Timeto string) (results []Result) {
 		result.Comment = 0
 		id := resp.Request.Ctx.Get("id")
 		result.Srcurl = fmt.Sprintf("http://a.mp.uc.cn/article.html?wm_cid=%s", id)
-		result.Type = resp.Request.Ctx.Get("type")
 		result.Domain = resp.Request.Ctx.Get("category")
 		result.Title = resp.Request.Ctx.Get("title")
 		result.PublicTime = resp.Request.Ctx.Get("publishtime")
+
+		theType := resp.Request.Ctx.Get("type")
+		if theType == "1001" {
+			result.Type = "图文"
+		} else if theType == "1002" {
+			result.Type = "视频"
+		} else if theType == "1005" {
+			result.Type = "图集"
+		} else {
+			result.Type = "未知类型" + theType
+		}
 
 		// 根据阅读量筛选
 		hv, _ := strconv.Atoi(Readlimit)
