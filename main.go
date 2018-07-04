@@ -61,6 +61,7 @@ func main() {
 			Height:          astilectron.PtrInt(760),
 			Width:           astilectron.PtrInt(1350),
 			MinWidth:        astilectron.PtrInt(1050),
+			AutoHideMenuBar:	 astilectron.PtrBool(true),
 		},
 	}); err != nil {
 		astilog.Fatal(errors.Wrap(err, "running bootstrap failed"))
