@@ -1,56 +1,132 @@
 package main
 
 import (
-	"fmt"
+	"io/ioutil"
 	"log"
+	"net/http"
+	"net/url"
+	"strconv"
+	"time"
 
-	"github.com/gocolly/colly"
-	"github.com/gocolly/colly/extensions"
-	"github.com/gocolly/colly/queue"
+	jsoniter "github.com/json-iterator/go"
 )
 
+var AuthorID = "5a8a9f033817831a28afd45b"
+var Readlimit = "100000"
+var Timefrom = "2018-06-01 00:00:00"
+var Timeto = "2018-07-02 00:00:00"
+
+// Result 自己需要的结构
+type Result struct {
+	Domain     string
+	Title      string
+	Type       string
+	PublicTime string
+	Read       int
+	Comment    int
+	Srcurl     string
+}
+
+type Obj struct {
+	Content []LeguanObj `json:"content"`
+}
+type LeguanObj struct {
+	ID          string `json:"id"`
+	Title       string `json:"title"`
+	URL         string `json:"url"`
+	Platform    string `json:"platform"`
+	Account     string `json:"account"`
+	Domain      string `json:"domain"`
+	Status      int    `json:"status"`
+	Read        int    `json:"read"`
+	Like        int    `json:"like"`
+	Comment     int    `json:"comment"`
+	Favor       int    `json:"favor"`
+	Origin      int    `json:"origin"`
+	MediaType   int    `json:"mediaType"`
+	Coverpic    string `json:"coverPic"`
+	Sn          string `json:"sn"`
+	Publictime  string `json:"publicTime"`
+	Createtime  string `json:"createTime"`
+	UpdateTime  string `json:"updateTime"`
+	Lptime      int64  `json:"lptime"`
+	IsCrawl     int    `json:"isCrawl"`
+	Crawl       int    `json:"crawl"`
+	Area        string `json:"area"`
+	Province    string `json:"province"`
+	ChildDomain string `json:"childDomain"`
+	UserID      string `json:"userId"`
+	App         int    `json:"app"`
+	Apponline   int    `json:"appOnline"`
+	Priority    int    `json:"priority"`
+	Social      int    `json:"social"`
+	Havehtml    int    `json:"haveHtml"`
+	ES          int    `json:"es"`
+	Logo        string `json:"logo"`
+	Nickname    string `json:"nickName"`
+}
+
 func main() {
-
-	baseurl := "http://app.myzaker.com/index.php?app_id="
-
-	c := colly.NewCollector()
-	extensions.RandomUserAgent(c)
-
-	queues, _ := queue.New(
-		26, // Number of consumer threads
-		&queue.InMemoryQueueStorage{MaxSize: 10000}, // Use default queue storage
-	)
-
-	c.OnRequest(func(r *colly.Request) {
-		r.Headers.Set("Host", "app.myzaker.com")
-		r.Headers.Set("Referer", "http://www.myzaker.com")
-		log.Println("Visiting: ", r.URL.String())
-	})
-
-	c.OnHTML("html", func(e *colly.HTMLElement) {
-		e.ForEach("#infinite_scroll a", func(_ int, el *colly.HTMLElement) {
-			author := el.ChildText(".author span:first-child")
-			//辅助函数(utils.go中)，解析汉字时间
-			publishtime := el.ChildText(".date")
-			log.Println(author)
-			log.Println(publishtime)
-			//数据入库
-			// check = exist(db, url)
-			// if _, ok := check.(bool); ok {
-			// 	log.Println("此新闻已入库: ", url)
-			// } else {
-			// 	err := newsadd(db, field, title, author, publishtime, 0, 0, url, cover)
-			// 	if err != nil {
-			// 		log.Fatal("Line106-Error: ", err)
-			// 	}
-			// }
-		})
-	})
-	pagelist := []int{0, 1}
-	//pagelist := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 959, 981, 1014, 1039, 1067, 10376, 10386, 10530, 10802, 11195}
-	for _, i := range pagelist {
-		queues.AddURL(fmt.Sprintf("%s%d", baseurl, i))
+	results := []Result{}
+	relimit, err := strconv.Atoi(Readlimit)
+	tfrom, err := time.Parse("2006-01-02 15:04:05", Timefrom)
+	tto, err := time.Parse("2006-01-02 15:04:05", Timeto)
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	queues.Run(c)
+	req, err := http.PostForm(
+		"http://www.myleguan.com/lg_res/focus/flr/gaibui",
+		url.Values{
+			"ids":          {AuthorID},
+			"lgCustomerId": {"1000183092"},
+			"lptimeOrder":  {"DESC"},
+			"size":         {"10000"}})
+
+	if err != nil {
+		log.Println(err.Error())
+	}
+	defer req.Body.Close()
+
+	body, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		log.Println(err.Error())
+	}
+
+	reObj := jsoniter.Get(body, "reObj").ToString()
+
+	content := &Obj{}
+	err = jsoniter.UnmarshalFromString(reObj, content)
+	if err != nil {
+		log.Fatal(err)
+	}
+	result := Result{}
+	for _, item := range content.Content {
+		result.Domain = item.Domain
+		result.Title = item.Title
+		result.PublicTime = item.Publictime
+		result.Read = item.Read
+		result.Comment = item.Comment
+		result.Srcurl = item.URL
+
+		if item.MediaType == 1 {
+			result.Type = "图文"
+		} else if item.MediaType == 2 {
+			result.Type = "视频"
+		} else {
+			result.Type = "未知"
+		}
+
+		timeline, err := time.Parse("2006-01-02 15:04:05", result.PublicTime)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if relimit <= result.Read && tfrom.Before(timeline) && tto.After(timeline) {
+			results = append(results, result)
+		}
+
+	}
+	log.Println(results)
+
 }
