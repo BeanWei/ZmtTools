@@ -152,8 +152,7 @@ export default {
         name: "Upload",
         payload: allvideo
       },function(message){
-        this.me = message
-        console.log("后台说：" + message)
+        console.log(message.payload)
       })
     }
   }

@@ -102,7 +102,6 @@ export default {
         obj.filename = this.videoList[i-1].file.name
         this.videos.push(obj)
       } 
-      console.log(this.videos)
       this.$store.dispatch("setVideos", this.videos)
     }
   },

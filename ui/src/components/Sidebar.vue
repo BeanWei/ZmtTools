@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer :width="210" app v-model="drawer" floating>
+  <v-navigation-drawer :width="210" app v-model="drawer" floating permanent>
     <v-card flat height="100%">
       <v-card-media height="auto" :src="sideBarHeaderIcon">
         <v-list two-line>

@@ -103,20 +103,20 @@
           上一页
         </v-btn>
       </v-flex>
-      <v-flex xs12 sm1>
-        <v-subheader>跳转至:</v-subheader>
+      <v-flex xs12 sm1 style="margin-top: 9px;">
+        <v-subheader style="margin-left: -30px;">跳转至:</v-subheader>
       </v-flex>
       <v-flex xs12 sm4>
         <v-text-field
           v-model="pagenum"
           label="输入页数"
           single-line
-          style="margin-top: -12px;"
+          style="margin-left: -30px;"
           @keyup.enter="pagejump"
         ></v-text-field>
       </v-flex>
-      <v-flex xs12 sm2>
-        <v-subheader>页 | 共{{totalpages}}页 | 当前第-{{page}}-页</v-subheader>
+      <v-flex xs12 sm2 style="margin-top: 9px;">
+        <v-subheader style="margin-left: -30px;">页 | 当前第-{{page}}-页 | 共{{totalpages}}页 </v-subheader>
       </v-flex>
       <v-flex xs12 sm1>
         <v-btn flat icon large color="blue-grey darken-2" @click="next">
@@ -217,6 +217,13 @@
       totalpages: 1,
       pagechage: false
     }),
+    watch: {
+      respdata(nowVal, oldVal) {
+        if (nowVal.length != 0) {
+          this.loading = false
+        }
+      }
+    },
     methods: {
       submit() {
         this.loading = true
@@ -292,9 +299,6 @@
         }, response => {
           alert("出错了！")
         })
-        setTimeout(() => {
-          this.loading = false
-        }, 1000) 
         this.pagechage = false
       },
       pagejump() {
@@ -342,7 +346,7 @@
         //   alert("出错了！")
         // })
         astilectron.sendMessage({
-          name:"Baowen",
+          name:"Urlwindow",
           payload: url
         }, function(message){})
       }

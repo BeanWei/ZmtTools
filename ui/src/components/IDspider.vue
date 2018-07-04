@@ -2,8 +2,8 @@
   <v-card>
     <v-card-text>
       <v-container fluid>
-        <v-layout row wrap style="margin-top: -40px;">
-          <v-flex xs12 style="height: 50px;">
+        <v-layout row wrap style="margin-top: -50px;">
+          <v-flex xs12 sm12>
             <v-radio-group v-model="sites" row>
               <v-radio
                 v-for="(site, i) in ['大鱼号', '百家号', '企鹅号', '头条号']"
@@ -17,7 +17,7 @@
           <v-btn
             color="teal"
             class="white--text"
-            style="margin: 10px 26px 0px -10px;"
+            style="margin: -2px 26px 0px -10px;"
             @click.native="loader = 'loading3'"
           >
             解析ID
@@ -104,13 +104,17 @@
       class="elevation-3"
     >
       <template slot="items" slot-scope="props">
-        <td class="text-xs-left">{{props.item.domain}}</td>
-        <td class="text-xs-left">{{props.item.title}}</td>
-        <td class="text-xs-left">{{props.item.type}}</td>
-        <td class="text-xs-left">{{props.item.publicTime}}</td>
-        <td class="text-xs-left">{{props.item.read}}</td>
-        <td class="text-xs-left">{{props.item.comment}}</td>
-        <td class="text-xs-left">{{props.item.srcurl}}</td>
+        <td class="text-xs-left">{{props.item.Domain}}</td>
+        <td class="text-xs-left">{{props.item.Title}}</td>
+        <td class="text-xs-left">{{props.item.Type}}</td>
+        <td class="text-xs-left">{{props.item.PublicTime}}</td>
+        <td class="text-xs-left">{{props.item.Read}}</td>
+        <td class="text-xs-left">{{props.item.Comment}}</td>
+        <td class="justify-center layout px-0">
+          <v-btn icon class="mx-0" @click="sourceItem(props.item.Srcurl)">
+            <v-icon color="teal">import_contacts</v-icon>
+          </v-btn>
+        </td>
       </template>
       <template slot="no-data">
         <v-alert :value="true" outline color="error" icon="warning">
@@ -144,20 +148,28 @@
         menu2: false,
         loading: false,
         headers: [
-          { text: '领域', align: 'left', sortable: false, value: 'domain' },
-          { text: '标题', align: 'left', sortable: false, value: 'title' },
-          { text: '分类', align: 'left', sortable: false, value: 'type' },
-          { text: '时间', align: 'left', sortable: false, value: 'publicTime' },
-          { text: '阅读', align: 'left', sortable: false, value: 'read' },
-          { text: '评论', align: 'left', sortable: false, value: 'comment' },
-          { text: '原文', align: 'left', sortable: false, value: 'srcurl' }
+          { text: '领域', align: 'left', sortable: false, value: 'Domain' },
+          { text: '标题', align: 'left', sortable: false, value: 'Title' },
+          { text: '分类', align: 'left', sortable: false, value: 'Type' },
+          { text: '时间', align: 'left', sortable: false, value: 'PublicTime' },
+          { text: '阅读', align: 'left', sortable: false, value: 'Read' },
+          { text: '评论', align: 'left', sortable: false, value: 'Comment' },
+          { text: '原文', sortable: false, value: 'Srcurl' }
         ],
         posts: []
+      }
+    },
+    watch: {
+      posts(nowVal, oldVal) {
+        if (nowVal.length != 0) {
+          this.loading = false
+        }
       }
     },
     methods: {
       start() {
         this.loading = true
+        var addpost = []
         const idpost = {
           "platform": this.sites,
           "authorid": this.authorID,
@@ -169,13 +181,22 @@
           name: "IDspider",
           payload: idpost
         },function(message){
-          console.log("I have received:" + message)
-          this.posts = message.payload
-          console.log(this.posts)
+          const allitem = message.payload
+          for (var item in allitem) {
+            addpost.push(allitem[item])
+          }
         })
-        setTimeout(() => {
-          this.loading = false
-        }, 1000) 
+        this.posts = addpost
+        // setTimeout(() => {
+        //   this.loading = false
+        // }, 10000) 
+      },
+      sourceItem(Srcurl) {
+        const url = Srcurl
+        astilectron.sendMessage({
+          name:"Urlwindow",
+          payload: url
+        }, function(message){})
       }
     }
   }
