@@ -10,6 +10,7 @@ import (
 
 // UploadInfo 视频上传信息接口
 type UploadInfo []struct {
+	Filename	string	`json:"filename"`
 	Title    string `json:"title"`
 	Describe string `json:"describe"`
 	Tags     string `json:"tags"`
@@ -35,6 +36,7 @@ func handleMessages(a *astilectron.Astilectron, _ *astilectron.Window, m bootstr
 			if err != nil {
 				return err.Error(), nil
 			}
+			//TODO: 添加视频上传模块
 			astilog.Debug(uploadinfo)
 			return "I HAVE RECIVEID THIS MESSAGE", nil
 		}
@@ -48,7 +50,7 @@ func handleMessages(a *astilectron.Astilectron, _ *astilectron.Window, m bootstr
 			payload = IDspider(idpost)
 			return payload, nil
 		}
-	case "Baowen":
+	case "Urlwindow":
 		{
 			var url string
 			err := json.Unmarshal(m.Payload, &url)
@@ -56,11 +58,12 @@ func handleMessages(a *astilectron.Astilectron, _ *astilectron.Window, m bootstr
 				return err.Error(), nil
 			}
 
-			_, _ = a.NewWindow(url, &astilectron.WindowOptions{
+			var w, _ = a.NewWindow(url, &astilectron.WindowOptions{
 				Center: astilectron.PtrBool(true),
 				Height: astilectron.PtrInt(600),
 				Width:  astilectron.PtrInt(600),
 			})
+			w.Create()
 		}
 	case "News":
 		{
