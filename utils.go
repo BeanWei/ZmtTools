@@ -62,3 +62,40 @@ func dateparse(datestr string) (string, error) {
 		return datestr, nil
 	}
 }
+
+// string arry 去重
+func RemRepArry(arry []string) []string {
+	if len(arry) < 1024 {
+		return RemByLp(arry)
+	} else {
+		return RemByMap(arry)
+	}
+}
+func RemByLp(arry []string) []string {
+	result := []string{}
+	for i := range arry {
+		flag := true
+		for j := range result {
+			if arry[i] == result[j] {
+				flag = false
+				break
+			}
+		}
+		if flag {
+			result = append(result, arry[i])
+		}
+	}
+	return result
+}
+func RemByMap(arry []string) []string {
+	result := []string{}
+	tempMap := map[string]byte{}
+	for _, e := range arry {
+		l := len(tempMap)
+		tempMap[e] = 0
+		if len(tempMap) != l {
+			result = append(result, e)
+		}
+	}
+	return result
+}
