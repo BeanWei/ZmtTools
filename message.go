@@ -72,12 +72,18 @@ func handleMessages(a *astilectron.Astilectron, _ *astilectron.Window, m bootstr
 			if err != nil {
 				return err.Error(), nil
 			}
-			payload = newsquery(field)
+			payload, err = storage.Newsquery(field)
+			if err != nil {
+				return err.Error(), nil
+			}
 			return payload, nil
 		}
 	case "Domains":
 		{
-			payload = domains()
+			payload, err = storage.Domains()
+			if err != nil {
+				return err.Error(), nil
+			}
 			return payload, nil
 		}
 	}
