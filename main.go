@@ -5,12 +5,13 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/ZEROKISEKI/go-astilectron-bootstrap"
 	"github.com/asticode/go-astilectron"
 	"github.com/asticode/go-astilog"
 	"github.com/pkg/errors"
-	"github.com/jasonlvhit/gocron"
+	// "github.com/jasonlvhit/gocron"
 )
 
 var (
@@ -61,8 +62,28 @@ func main() {
 			if err != nil {
 				astilog.Fatal(errors.Wrap(err, "OpenDevTools failed"))
 			}
-			gocron.NewScheduler().Every(20).Minutes().Do(NewsSpider)
-			<-gocron.Start()
+
+			//软件开启时开始新闻爬取
+
+			//NewsSpider()
+
+
+			//将item传给前台vuex数据管理处
+			go func() {
+				time.Sleep(5 * time.Second)
+				payload, err := storage.Domains()
+				if err != nil {
+					astilog.Error(errors.Wrap(err, "DB get the news's all domains failed"))
+				} else {
+					if err = bootstrap.SendMessage(w, "newsdomain", payload); err != nil {
+						astilog.Error(errors.Wrap(err, "send the news's all domains failed"))
+					}	
+				}	
+			}()
+
+			//定时爬取新闻
+			// gocron.NewScheduler().Every(20).Minutes().Do(NewsSpider)
+			// <-gocron.Start()
 			//go checkAPI()
 			return nil
 		},
