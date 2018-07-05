@@ -56,6 +56,17 @@ func IDspider(reqinfo *IDpost) (results []Result) {
 	}
 }
 
+var cmpl chan int
+// NewsSpider 新闻页爬虫入口函数
+func NewsSpider() {
+	cmpl = make(chan int)
+	go tencent()
+	go zaker()
+	go jxnews()
+	go ynet()
+	<-cmpl
+}
+
 /*================爬===虫===入===口==========================*/
 
 /*根据前台传入的指定作者ID进行定向爬取文章*/
@@ -252,7 +263,7 @@ func Leguan(AuthorID, Readlimit, Timefrom, Timeto string) (results []Result) {
 	}
 
 	reObj := jsoniter.Get(body, "reObj").ToString()
-
+	log.Println(reObj)
 	content := &Obj{}
 	err = jsoniter.UnmarshalFromString(reObj, content)
 	if err != nil {
@@ -293,11 +304,9 @@ func Leguan(AuthorID, Readlimit, Timefrom, Timeto string) (results []Result) {
 
 /*利用目前的站点采集所有领域的文章并存入数据库*/
 
-//初始化数据库
-var db = dbinit()
 
 // 检查准备入库的新闻是否已存在
-var check interface{}
+var check bool
 
 // tencent 腾讯新闻 TODO: 暂时只分析了娱乐版块
 func tencent() {
@@ -324,12 +333,12 @@ func tencent() {
 			comments := jsoniter.Get(jsonbyte, "data", index, "comment_num").ToInt()
 			cover := jsoniter.Get(jsonbyte, "data", index, "bimg").ToString()
 			//数据入库
-			check = exist(db, url)
-			if _, ok := check.(bool); ok {
+			check = storage.ExistURL(url)
+			if check == true {
 				log.Println("此新闻已入库: ", url)
 				continue
 			} else {
-				err := newsadd(db, field, title, author, publishtime, views, comments, url, cover)
+				err := storage.AddNews(field, title, author, publishtime, views, comments, url, cover)
 				if err != nil {
 					log.Fatal("Line53-Error: ", err)
 				}
@@ -378,11 +387,11 @@ func zaker() {
 				cover = "http://zkres.myzaker.com/static/zaker_web2/img/logo.png?v=20170726"
 			}
 			//数据入库
-			check = exist(db, url)
-			if _, ok := check.(bool); ok {
+			check = storage.ExistURL(url)
+			if check == true {
 				log.Println("此新闻已入库: ", url)
 			} else {
-				err := newsadd(db, field, title, author, publishtime, 0, 0, url, cover)
+				err := storage.AddNews(field, title, author, publishtime, 0, 0, url, cover)
 				if err != nil {
 					log.Fatal("Line106-Error: ", err)
 				}
@@ -430,12 +439,12 @@ func jxnews() {
 			}
 			cover := jsoniter.Get(jsonbyte, index, "titlepic").ToString()
 			//数据入库
-			check = exist(db, url)
-			if _, ok := check.(bool); ok {
+			check = storage.ExistURL(url)
+			if check == true {
 				log.Println("此新闻已入库: ", url)
 				continue
 			} else {
-				err := newsadd(db, field, title, author, publishtime, 0, 0, url, cover)
+				err := storage.AddNews(field, title, author, publishtime, 0, 0, url, cover)
 				if err != nil {
 					log.Fatal("Line159-Error: ", err)
 				}
@@ -481,12 +490,12 @@ func ynet() {
 			cover := jsoniter.Get(jsonbyte, "articles", index, "images", 0, "url").ToString()
 
 			//数据入库
-			check = exist(db, url)
-			if _, ok := check.(bool); ok {
+			check = storage.ExistURL(url)
+			if check == true {
 				log.Println("此新闻已入库: ", url)
 				continue
 			} else {
-				err := newsadd(db, field, title, author, publishtime, 0, 0, url, cover)
+				err := storage.AddNews(field, title, author, publishtime, 0, 0, url, cover)
 				if err != nil {
 					log.Fatal("Line210-Error: ", err)
 				}
