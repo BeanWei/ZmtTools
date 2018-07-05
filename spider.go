@@ -263,7 +263,7 @@ func Leguan(AuthorID, Readlimit, Timefrom, Timeto string) (results []Result) {
 	}
 
 	reObj := jsoniter.Get(body, "reObj").ToString()
-	log.Println(reObj)
+	// log.Println(reObj)
 	content := &Obj{}
 	err = jsoniter.UnmarshalFromString(reObj, content)
 	if err != nil {
