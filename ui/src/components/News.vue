@@ -98,22 +98,28 @@ export default {
   watch: {
     "currentItem": function(val, oldval) {
       const nowitem = val.slice(4)
+      var nlst = []
       astilectron.sendMessage({
         name: "News",
         payload: nowitem
       },function(message){
-        this.newslist = message.payload
-        console.log(this.newslist)
+        nlst = message.payload
+        // console.log(message.payload)
       })
+      this.newslist = nlst
     }
   },
   created() { 
+    var aits = []
     astilectron.sendMessage({
       name: "Domains",
     }, function(message){
-      this.allitems = message.payload
-      console.log(this.allitems)
+      aits = message.payload
     })
+    for (var i in aits) {
+      this.allitems.push(i)
+    }
+    console.log(this.allitems)
   },
   methods: {
     more(item) {
