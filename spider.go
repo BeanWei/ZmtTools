@@ -386,7 +386,7 @@ func zaker() {
 			} else {
 				cover = "http://zkres.myzaker.com/static/zaker_web2/img/logo.png?v=20170726"
 			}
-			if field && title && author && publishtime && url != "" {
+			if field != "" && title != "" && author != "" && publishtime != "" && url != "" {
 				//数据入库
 				check = storage.ExistURL(url)
 				if check == true {
@@ -440,7 +440,7 @@ func jxnews() {
 				log.Fatal(err)
 			}
 			cover := jsoniter.Get(jsonbyte, index, "titlepic").ToString()
-			if field && title && author && publishtime && url != "" {
+			if field != "" && title != "" && author != "" && publishtime != "" && url != "" {
 				//数据入库
 				check = storage.ExistURL(url)
 				if check == true {
@@ -492,7 +492,7 @@ func ynet() {
 			author := jsoniter.Get(jsonbyte, "articles", index, "media").ToString()
 			publishtime := jsoniter.Get(jsonbyte, "articles", index, "updateTime").ToString()
 			cover := jsoniter.Get(jsonbyte, "articles", index, "images", 0, "url").ToString()
-			if field && title && author && publishtime && url != "" {
+			if field != "" && title != "" && author != "" && publishtime != "" && url != "" {
 				//数据入库
 				check = storage.ExistURL(url)
 				if check == true {
