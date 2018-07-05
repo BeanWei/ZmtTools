@@ -29,15 +29,6 @@
         </v-tabs>
         <v-container fluid grid-list-md>
           <v-layout row wrap>
-            <v-dialog v-model="browse" width="600px">
-              <v-card>
-                <v-card-text v-html="resp"></v-card-text>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="green darken-1" flat="flat" @click="browse = false">关闭</v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
             <v-flex xs12 sm7 style="margin-top: -32px;">
               <v-list three-line>
                 <template v-for="(news, index) in newslist">
@@ -98,8 +89,6 @@ export default {
   name: "News",
   data() {
     return {
-      resp: '',
-      browse: false,
       currentItem: 'tab-0',
       mainitems: ["热点","科技","娱乐","搞笑","财经","游戏"],
       allitems: [],
@@ -114,6 +103,7 @@ export default {
         payload: nowitem
       },function(message){
         this.newslist = message.payload
+        console.log(this.newslist)
       })
     }
   },
@@ -122,6 +112,7 @@ export default {
       name: "Domains",
     }, function(message){
       this.allitems = message.payload
+      console.log(this.allitems)
     })
   },
   methods: {
@@ -129,17 +120,10 @@ export default {
       this.currentItem = 'tab-' + item
     },
     seeout(url) {
-      this.$axios.get(
-        url,
-        {  
-          // 跨域请求 这个配置不能少  
-          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",  
-          'Accept': 'application/json'  
-        } 
-      ).then(response => {
-        this.resp = response.data
-      })
-      this.browse = true
+      astilectron.sendMessage({
+        name:"Urlwindow",
+        payload: url
+      }, function(message){})
     },
   }
 }

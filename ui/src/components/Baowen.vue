@@ -338,9 +338,9 @@
         }, function(message){})
       }
     },
-    // created() { 
-    //   this.submit()
-    // }
+    created() { 
+      this.submit()
+    }
   }
 </script>
 
