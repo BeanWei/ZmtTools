@@ -386,14 +386,16 @@ func zaker() {
 			} else {
 				cover = "http://zkres.myzaker.com/static/zaker_web2/img/logo.png?v=20170726"
 			}
-			//数据入库
-			check = storage.ExistURL(url)
-			if check == true {
-				log.Println("此新闻已入库: ", url)
-			} else {
-				err := storage.AddNews(field, title, author, publishtime, 0, 0, url, cover)
-				if err != nil {
-					log.Fatal("Line106-Error: ", err)
+			if field && title && author && publishtime && url != "" {
+				//数据入库
+				check = storage.ExistURL(url)
+				if check == true {
+					log.Println("此新闻已入库: ", url)
+				} else {
+					err := storage.AddNews(field, title, author, publishtime, 0, 0, url, cover)
+					if err != nil {
+						log.Fatal("Line106-Error: ", err)
+					}
 				}
 			}
 		})
@@ -438,17 +440,19 @@ func jxnews() {
 				log.Fatal(err)
 			}
 			cover := jsoniter.Get(jsonbyte, index, "titlepic").ToString()
-			//数据入库
-			check = storage.ExistURL(url)
-			if check == true {
-				log.Println("此新闻已入库: ", url)
-				continue
-			} else {
-				err := storage.AddNews(field, title, author, publishtime, 0, 0, url, cover)
-				if err != nil {
-					log.Fatal("Line159-Error: ", err)
+			if field && title && author && publishtime && url != "" {
+				//数据入库
+				check = storage.ExistURL(url)
+				if check == true {
+					log.Println("此新闻已入库: ", url)
+					continue
+				} else {
+					err := storage.AddNews(field, title, author, publishtime, 0, 0, url, cover)
+					if err != nil {
+						log.Fatal("Line159-Error: ", err)
+					}
 				}
-			}
+			}	
 		}
 	})
 
@@ -488,18 +492,19 @@ func ynet() {
 			author := jsoniter.Get(jsonbyte, "articles", index, "media").ToString()
 			publishtime := jsoniter.Get(jsonbyte, "articles", index, "updateTime").ToString()
 			cover := jsoniter.Get(jsonbyte, "articles", index, "images", 0, "url").ToString()
-
-			//数据入库
-			check = storage.ExistURL(url)
-			if check == true {
-				log.Println("此新闻已入库: ", url)
-				continue
-			} else {
-				err := storage.AddNews(field, title, author, publishtime, 0, 0, url, cover)
-				if err != nil {
-					log.Fatal("Line210-Error: ", err)
+			if field && title && author && publishtime && url != "" {
+				//数据入库
+				check = storage.ExistURL(url)
+				if check == true {
+					log.Println("此新闻已入库: ", url)
+					continue
+				} else {
+					err := storage.AddNews(field, title, author, publishtime, 0, 0, url, cover)
+					if err != nil {
+						log.Fatal("Line210-Error: ", err)
+					}
 				}
-			}
+			}	
 		}
 	})
 
