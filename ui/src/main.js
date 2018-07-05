@@ -33,6 +33,15 @@ new Vue({
 //js 与 golang 通信
 document.addEventListener('astilectron-ready', function() {
 
+  astilectron.onMessage(message => {
+    switch(message.name) {
+      case "newsdomain" : {
+        console.log(message.payload)
+        store.dispatch("setDomains", message.payload)
+      }
+    }
+  })
+
   // astilectron.onMessage(message => {
 
   //   switch(message.name) {
