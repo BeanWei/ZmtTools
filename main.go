@@ -10,6 +10,7 @@ import (
 	"github.com/asticode/go-astilectron"
 	"github.com/asticode/go-astilog"
 	"github.com/pkg/errors"
+	"github.com/jasonlvhit/gocron"
 )
 
 var (
@@ -19,10 +20,20 @@ var (
 	w       *astilectron.Window
 )
 
+//初始化数据库
+var storage = &Storage{Filename: "./src.db"}
+
 func main() {
 
 	flag.Parse()
 	astilog.FlagInit()
+
+	defer storage.Close()
+	err := storage.Init()
+	if err != nil {
+		astilog.Debugf("DB init Failed")
+	}
+	// NewsSpider()
 
 	if p, err := os.Executable(); err != nil {
 		err = errors.Wrap(err, "os.Executable failed")
@@ -50,6 +61,8 @@ func main() {
 			if err != nil {
 				astilog.Fatal(errors.Wrap(err, "OpenDevTools failed"))
 			}
+			gocron.NewScheduler().Every(20).Minutes().Do(NewsSpider)
+			<-gocron.Start()
 			//go checkAPI()
 			return nil
 		},
