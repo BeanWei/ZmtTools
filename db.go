@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"log"
+	"sync"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -10,6 +11,7 @@ import (
 type Storage struct {
 	Filename	string
 	dbh	*sql.DB
+	mu  sync.RWMutex
 }
 
 func (s *Storage) Init() error {
@@ -64,6 +66,11 @@ func (s *Storage) Close() error {
 }
 
 func (s *Storage) AddNews(field string, title string, author string, publishtime string, views int, comments int, url string, cover string) error {
+
+	// 加锁
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	
 	//插入数据
 	statement, err := s.dbh.Prepare(
 		"INSERT INTO newsinfo(field, title, author, publishtime, views, comments, url, cover) values(?, ?, ?, ?, ?, ?, ?, ?)")
@@ -99,21 +106,43 @@ type Newsinfo struct {
 }
 
 // Newsquery 根据选择的领域进行数据库查询筛选
-func (s *Storage) Newsquery(field string) ([]*Newsinfo, error) {
+func (s *Storage) Newsquery(field string) ([]map[string]interface{}, error) {
 	rows, err := s.dbh.Query("SELECT * FROM newsinfo WHERE field=?", field)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	allnews := []*Newsinfo{}
+	allnews := []map[string]interface{}{}
 	for rows.Next() {
-		n := new(Newsinfo)
-		err := rows.Scan(&n.uid, &n.field, &n.title, &n.author, &n.publishtime, &n.views, &n.comments, &n.url, &n.cover)
+		// n := new(Newsinfo)
+		// err := rows.Scan(&n.uid, &n.field, &n.title, &n.author, &n.publishtime, &n.views, &n.comments, &n.url, &n.cover)
+		var		uid					int
+		var		field       string
+		var		title       string
+		var		author      string
+		var		publishtime string
+		var		views       int
+		var		comments    int
+		var		url         string
+		var		cover       string
+		err := rows.Scan(&uid, &field, &title, &author, &publishtime, &views, &comments, &url, &cover)
 		if err != nil {
 			return nil, err
 		}
-		allnews = append(allnews, n)
+		newsmap := map[string]interface{}{
+			"uid": uid,
+			"field": field,
+			"title": title,
+			"author": author,
+			"read":	views,
+			"comment": comments,
+			"publishtime": publishtime,
+			"cover": cover,
+			"url": url,
+		}
+		allnews = append(allnews, newsmap)
 	}
+	log.Println(allnews)
 	return allnews, nil
 } 
 
