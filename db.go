@@ -87,6 +87,7 @@ func (s *Storage) AddNews(field string, title string, author string, publishtime
 
 // Newsinfo 结构体
 type Newsinfo struct {
+	uid					int
 	field       string
 	title       string
 	author      string
@@ -107,7 +108,7 @@ func (s *Storage) Newsquery(field string) ([]*Newsinfo, error) {
 	allnews := []*Newsinfo{}
 	for rows.Next() {
 		n := new(Newsinfo)
-		err := rows.Scan(&n.field, &n.title, &n.author, &n.publishtime, &n.views, &n.comments, &n.url, &n.cover)
+		err := rows.Scan(&n.uid, &n.field, &n.title, &n.author, &n.publishtime, &n.views, &n.comments, &n.url, &n.cover)
 		if err != nil {
 			return nil, err
 		}
