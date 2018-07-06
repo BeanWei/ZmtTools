@@ -1,10 +1,10 @@
 <template>
   <v-layout row style="margin-top: -10px;">
     <v-flex>
-      <v-card>
-        <v-tabs dark show-arrows fixed-tabs v-model="currentItem">
+      <v-card flat height="650">
+        <v-tabs dark show-arrows fixed-tabs>
           <v-tabs-slider color="red"></v-tabs-slider>
-          <v-tab v-for="item in mainitems" :href="'#tab-' + item" color="black">{{item}}</v-tab>
+          <v-tab v-for="item in mainitems" @click="changeItem(item)" color="black">{{item}}</v-tab>
           <v-menu
             bottom
             class="v-tabs__div"
@@ -12,15 +12,14 @@
             auto
             nudge-bottom="50"
           >
-            <a slot="activator" class="v-tabs__item">
+            <a slot="activator" class="v-tabs__item" @click="getAllDomains()">
               更多
               <v-icon>add</v-icon>
             </a>
             <v-list class="grey lighten-3">
               <v-list-tile
                 v-for="item in allitems"
-                :href="'#tab-' + item"
-                @click="more(item)"
+                @click="changeItem(item)"
               >
                 {{ item }}
               </v-list-tile>
@@ -34,7 +33,7 @@
                 <template v-for="(news, index) in newslist">
                   <v-divider :divider="false" :inset="true" :key="index"></v-divider>
                   <v-list-tile avatar @click="seeout(news.url)">
-                    <v-list-tile-avatar :size="72" :tile="true">
+                    <v-list-tile-avatar :size="72" :tile="true" style="margin: 3px 10px 0px -20px">
                       <img :src="news.cover">
                     </v-list-tile-avatar>
                     <v-list-tile-content>
@@ -89,46 +88,29 @@ export default {
   name: "News",
   data() {
     return {
-      currentItem: 'tab-0',
       mainitems: ["热点","科技","娱乐","搞笑","财经","游戏"],
       allitems: [],
       newslist: []
     }
   },
-  watch: {
-    "currentItem": function(val, oldval) {
-      const nowitem = val.slice(4)
-      //var nlst = []
+  methods: {
+    changeItem(item) {
+      var nlst = []
       astilectron.sendMessage({
         name: "News",
-        payload: nowitem
+        payload: item
       },function(message){
-        //nlst = message.payload
-        this.$set(this, newslist, message.payload)
+        const allnews= message.payload
+        for (var idx in allnews) {
+          nlst.push(allnews[idx])
+        }
       })
+      console.log(nlst)
+      this.newslist = nlst
       console.log(this.newslist)
-    }
-  },
-  computed: {
-    allitems: function() {
-      return this.$store.getters.getDBdomains
-    }   
-  },
-  // created() { 
-  //   var aits = []
-  //   astilectron.sendMessage({
-  //     name: "Domains",
-  //   }, function(message){
-  //     aits = message.payload
-  //   })
-  //   for (var i in aits) {
-  //     this.allitems.push(i)
-  //   }
-  //   console.log(this.allitems)
-  // },
-  methods: {
-    more(item) {
-      this.currentItem = 'tab-' + item
+    },
+    getAllDomains() {
+      this.allitems = this.$store.getters.getDBdomains
     },
     seeout(url) {
       astilectron.sendMessage({
