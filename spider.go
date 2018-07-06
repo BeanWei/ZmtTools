@@ -371,7 +371,13 @@ func zaker() {
 	c.OnHTML("html", func(e *colly.HTMLElement) {
 		field := e.ChildText(".zk-wap-logotile")
 		e.ForEach("#infinite_scroll a", func(_ int, el *colly.HTMLElement) {
-			url := el.Attr("href")
+			unurl := el.Attr("href")
+			var url string
+			if unurl[0:2] == "//" {
+				url = fmt.Sprintf("%s%s", "https:", unurl)
+			} else {
+				url = unurl
+			}
 			title := el.ChildText(".title")
 			author := el.ChildText(".author span:first-child")
 			//辅助函数(utils.go中)，解析汉字时间
@@ -379,12 +385,12 @@ func zaker() {
 			if err != nil {
 				log.Fatal(err)
 			}
-			bg := regexp.MustCompile(`url\(\/\/(.*?)\);`).FindStringSubmatch(el.ChildAttr(".pic-cover", "style"))
+			unbg := regexp.MustCompile(`url\(\/\/(.*?)\);`).FindStringSubmatch(el.ChildAttr(".pic-cover", "style"))
 			var cover string
-			if len(bg) == 2 {
-				cover = bg[1]
+			if len(unbg) == 2 {
+				cover = fmt.Sprintf("%s%s", "https://", unbg[1])	
 			} else {
-				cover = "http://zkres.myzaker.com/static/zaker_web2/img/logo.png?v=20170726"
+				cover = ""
 			}
 			if field != "" && title != "" && author != "" && publishtime != "" && url != "" {
 				//数据入库
@@ -439,7 +445,8 @@ func jxnews() {
 			if err != nil {
 				log.Fatal(err)
 			}
-			cover := jsoniter.Get(jsonbyte, index, "titlepic").ToString()
+			uncover := jsoniter.Get(jsonbyte, index, "titlepic").ToString()
+			cover := strings.Replace(uncover, "http", "https", 1)
 			if field != "" && title != "" && author != "" && publishtime != "" && url != "" {
 				//数据入库
 				check = storage.ExistURL(url)
