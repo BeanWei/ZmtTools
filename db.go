@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"log"
 	"sync"
+	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -63,6 +64,33 @@ func (s *Storage) Clear() error {
 func (s *Storage) Close() error {
 	err := s.dbh.Close()
 	return err
+}
+
+func (s *Storage) ClearOldNews() error {
+	rows, err := s.dbh.Query("SELECT publishtime FROM newsinfo")
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var publishtime string
+		err = rows.Scan(&publishtime)
+		if err != nil {
+			return err
+		}
+		today := time.Now().Format("2006-01-02")
+		if today != publishtime[0:10] {
+			stmt, err := s.dbh.Prepare("DELETE FROM users WHERE publishtime = ?")
+			if err != nil {
+				return err
+			}
+			_, err = stmt.Exec(publishtime)
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }
 
 func (s *Storage) AddNews(field string, title string, author string, publishtime string, views int, comments int, url string, cover string) error {
@@ -152,6 +180,7 @@ func (s *Storage) Domains() ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 	results := []string{}
 	for rows.Next() {
 		var field string
