@@ -34,7 +34,6 @@ func main() {
 	if err != nil {
 		astilog.Debugf("DB init Failed")
 	}
-	// NewsSpider()
 
 	if p, err := os.Executable(); err != nil {
 		err = errors.Wrap(err, "os.Executable failed")
@@ -66,7 +65,12 @@ func main() {
 			//软件开启时开始新闻爬取
 
 			//NewsSpider()
-
+			go func() {
+				tencent()
+				zaker()
+				jxnews()
+				ynet()
+			}()
 
 			//将item传给前台vuex数据管理处
 			go func() {
