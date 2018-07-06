@@ -86,6 +86,26 @@ func handleMessages(a *astilectron.Astilectron, _ *astilectron.Window, m bootstr
 			}
 			return payload, nil
 		}
-	}
+	case "ClearOldNews":
+		{
+			// err := storage.ClearOldNews()
+			// if err != nil {
+			// 	return map[string]string{"infotype": "error", "alertInfo": "清理历史新闻失败"}, nil
+			// }
+			// return map[string]string{"infotype": "success", "alertInfo": "已为您成功清理历史新闻"}, nil
+			return map[string]string{"infotype": "info", "alertInfo": "抱歉！暂不支持清理"}, nil
+		}
+	case "NewsSpider":
+		{
+			//NewsSpider()
+			go func() {
+				tencent()
+				zaker()
+				jxnews()
+				ynet()
+			}()
+			return map[string]string{"infotype": "info", "alertInfo": "正在为您爬取更多最新新闻"}, nil	
+		}
+	}	
 	return
 }
