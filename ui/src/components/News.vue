@@ -105,12 +105,22 @@ export default {
           nlst.push(allnews[idx])
         }
       })
-      console.log(nlst)
       this.newslist = nlst
-      console.log(this.newslist)
     },
     getAllDomains() {
       this.allitems = this.$store.getters.getDBdomains
+      if (this.allitems.length == 0) {
+        var aldm = []
+        astilectron.sendMessage({
+          name: "Domains",
+        },function(message){
+          const dmtmp= message.payload
+          for (var idx in dmtmp) {
+            aldm.push(dmtmp[idx])
+          }
+        })
+        this.allitems = aldm
+      }
     },
     seeout(url) {
       astilectron.sendMessage({
@@ -118,6 +128,10 @@ export default {
         payload: url
       }, function(message){})
     },
+  },
+  created() { 
+    var item = "热点"
+    this.changeItem(item)
   }
 }
 </script>
