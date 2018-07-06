@@ -26,6 +26,15 @@
             </v-list>
           </v-menu>
         </v-tabs>
+        <v-alert
+          v-model="alert"
+          :type="type"
+          transition="scale-transition"
+          dismissible
+          style="width: 90%;"
+        >
+          {{alertInfo}}
+        </v-alert>
         <v-container fluid grid-list-md>
           <v-layout row wrap>
             <v-flex xs12 sm7 style="margin-top: -32px;">
@@ -78,6 +87,66 @@
             </v-flex>
           </v-layout>
         </v-container>
+        <v-speed-dial
+          v-model="fab"
+          bottom
+          right
+          fixed
+          :open-on-hover=true
+        >
+          <v-btn
+            slot="activator"
+            v-model="fab"
+            color="teal"
+            dark
+            fab
+          >
+            <v-icon>widgets</v-icon>
+            <v-icon>close</v-icon>
+          </v-btn>
+          <v-tooltip left>
+            <v-btn
+              icon
+              slot="activator"
+              fab
+              dark
+              small
+              color="green"
+              @click="clearOld()"
+            >
+              <v-icon>delete_forever</v-icon>
+            </v-btn>
+            <span>清理旧闻</span>
+          </v-tooltip>
+          <v-tooltip left>
+            <v-btn
+              icon
+              slot="activator"
+              fab
+              dark
+              small
+              color="indigo"
+              @click="refspider()"
+            >
+              <v-icon>replay</v-icon>
+            </v-btn>
+            <span>刷新更多</span>
+          </v-tooltip>
+          <v-tooltip left>
+            <v-btn
+              icon
+              slot="activator"
+              fab
+              dark
+              small
+              color="red"
+              @click="toTop()"
+            >
+              <v-icon>keyboard_arrow_up</v-icon>
+            </v-btn>
+            <span>回到顶部</span>
+          </v-tooltip>
+        </v-speed-dial>
       </v-card>
     </v-flex>
   </v-layout>
@@ -90,7 +159,22 @@ export default {
     return {
       mainitems: ["热点","科技","娱乐","搞笑","财经","游戏"],
       allitems: [],
-      newslist: []
+      newslist: [],
+      fab: false,
+      alert: false,
+      type: 'success',
+      alertInfo: 'Nothing'
+    }
+  },
+  watch: {
+    newslist(val, oldVal) {
+      if (val.length === 0) {
+        this.type = "warning",
+        this.alertInfo = "抱歉！暂时没有该领域的新闻，您可以点击右下角的工具按钮进行刷新获取",
+        this.alert = true
+      } else {
+        this.alert = false
+      }
     }
   },
   methods: {
@@ -128,6 +212,55 @@ export default {
         payload: url
       }, function(message){})
     },
+    clearOld() {
+      var infObj = {}
+      astilectron.sendMessage({
+        name: "ClearOldNews"
+      }, function(message){
+        const mp = message.payload
+        for (var key in mp) {
+          infObj[key] = mp[key]
+        }
+      }) 
+      setTimeout(() => {
+        if (JSON.stringify(infObj) != "{}") {
+          for (var k in infObj) {
+            if (k === "infotype") {
+              this.type = infObj[k]
+            } else {
+              this.alertInfo = infObj[k]
+            }
+          }
+          this.alert = true
+        }   
+      }, 1000)      
+    },
+    refspider() {
+      var infObj = {}
+      astilectron.sendMessage({
+        name: "NewsSpider"
+      }, function(message){
+        const mp = message.payload
+        for (var key in mp) {
+          infObj[key] = mp[key]
+        }
+      })
+      setTimeout(() => {
+        if (JSON.stringify(infObj) != "{}") {
+          for (var k in infObj) {
+            if (k === "infotype") {
+              this.type = infObj[k]
+            } else {
+              this.alertInfo = infObj[k]
+            }
+          }
+          this.alert = true
+        }   
+      }, 1000)     
+    },
+    toTop() {
+      document.documentElement.scrollTop = document.body.scrollTop = 0;
+    }
   },
   created() { 
     var item = "热点"
