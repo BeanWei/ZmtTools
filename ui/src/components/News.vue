@@ -68,22 +68,20 @@
                 single-line
                 hide-details
               ></v-text-field>
-              <v-list three-line>
-                <v-subheader><v-icon color="red">whatshot</v-icon><strong>24小时热榜</strong></v-subheader>
-                <template v-for="(news, index) in newslist">                
-                  <!-- <v-divider :divider="false" :inset="false" :key="index"></v-divider> -->
-                  <v-list-tile avatar @click="seeout(news.url)">
-                    <v-list-tile-content>
-                      <v-list-tile-title>{{news.title}}</v-list-tile-title>
-                      <v-list-tile-sub-title>
-                        <v-icon small>face</v-icon>{{news.author}}
-                        &nbsp;&nbsp;&nbsp;
-                        <v-icon small>access_time</v-icon>{{news.publishtime}}
-                      </v-list-tile-sub-title>
-                    </v-list-tile-content>
-                  </v-list-tile>
-                </template>
-              </v-list>
+              <div style="height:550px;overflow-y:scroll;overflow-x:hidden;margin-top: 10px;">
+                <v-card>
+                  <v-list>
+                    <v-subheader><v-icon color="red">whatshot</v-icon><strong>24小时热榜</strong></v-subheader>
+                    <template v-for="(hotnews, index) in hotnewslist">                
+                      <v-list-tile avatar @click="seeout(hotnews.url)">
+                        <v-list-tile-content>
+                          <v-list-tile-title>{{index+1}}.{{hotnews.title}}&nbsp;&nbsp;&nbsp;<v-icon small>whatshot</v-icon>{{hotnews.hotvalue}}</v-list-tile-title>
+                        </v-list-tile-content>
+                      </v-list-tile>
+                    </template>
+                  </v-list>
+                </v-card>
+              </div>
             </v-flex>
           </v-layout>
         </v-container>
@@ -160,6 +158,7 @@ export default {
       mainitems: ["热点","科技","娱乐","搞笑","财经","游戏"],
       allitems: [],
       newslist: [],
+      hotnewslist: [],
       fab: false,
       alert: false,
       type: 'success',
@@ -260,9 +259,38 @@ export default {
     },
     toTop() {
       document.documentElement.scrollTop = document.body.scrollTop = 0;
-    }
+    },
+    refHotNews() {
+      console.log("开始抓取热搜新闻")
+      for (var typenum = 0; typenum <= 1; typenum++) {
+        let postData = {
+          beginTimeLong: (new Date().getTime()-3600*1000).toString(),
+          lgCustomerId:	"1000186598",
+          lhwColumnId: 1,
+          lhwStatus:	1,
+          lhwType: typenum,
+          pageSize:	30,
+          reqTime:	new Date().getTime().toString() 
+        }
+        console.log(postData)
+        this.$axios.post(
+          "https://www.myleguan.com/lg_res/cmrest/chwr/qbak",
+          this.$qs.stringify(postData)
+        ).then(response => {
+          var obj = response.data.reObj
+          for (var idx in obj) {
+            const data = {}
+            data.url = obj[idx].lhwUrl
+            data.title = obj[idx].lhwWord
+            data.hotvalue = obj[idx].lhwHot
+            this.hotnewslist.push(data)
+          }
+        })
+      }
+    },
   },
   created() { 
+    this.refHotNews()
     var item = "热点"
     this.changeItem(item)
   }
