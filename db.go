@@ -71,7 +71,6 @@ func (s *Storage) ClearOldNews() error {
 	if err != nil {
 		return err
 	}
-	defer rows.Close()
 	for rows.Next() {
 		var publishtime string
 		err = rows.Scan(&publishtime)
@@ -80,7 +79,7 @@ func (s *Storage) ClearOldNews() error {
 		}
 		today := time.Now().Format("2006-01-02")
 		if today != publishtime[0:10] {
-			stmt, err := s.dbh.Prepare("DELETE FROM users WHERE publishtime = ?")
+			stmt, err := s.dbh.Prepare("DELETE FROM newsinfo WHERE publishtime = ?")
 			if err != nil {
 				return err
 			}
