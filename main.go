@@ -29,11 +29,11 @@ func main() {
 	flag.Parse()
 	astilog.FlagInit()
 
-	defer storage.Close()
-	err := storage.Init()
-	if err != nil {
-		astilog.Debugf("DB init Failed")
-	}
+	// defer storage.Close()
+	// err := storage.Init()
+	// if err != nil {
+	// 	astilog.Debugf("DB init Failed")
+	// }
 
 	if p, err := os.Executable(); err != nil {
 		err = errors.Wrap(err, "os.Executable failed")
@@ -75,6 +75,11 @@ func main() {
 			//将item传给前台vuex数据管理处
 			go func() {
 				time.Sleep(5 * time.Second)
+				err := storage.Init()
+				if err != nil {
+					astilog.Debugf("DB init Failed")
+				}
+				//defer storage.Close()
 				payload, err := storage.Domains()
 				if err != nil {
 					astilog.Error(errors.Wrap(err, "DB get the news's all domains failed"))
