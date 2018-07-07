@@ -26,6 +26,12 @@ type IDpost struct {
 	Dateto    string `json:"dateto"`
 }
 
+// CkReq 原创检测的post数据结构
+type CkReq struct {
+	Title		string	`json:"title"`
+	Content	string	`json:"content"`
+}
+
 // handleMessages handles messages
 func handleMessages(a *astilectron.Astilectron, _ *astilectron.Window, m bootstrap.MessageIn) (payload interface{}, err error) {
 	switch m.Name {
@@ -121,6 +127,16 @@ func handleMessages(a *astilectron.Astilectron, _ *astilectron.Window, m bootstr
 				ynet()
 			}()
 			return map[string]string{"infotype": "info", "alertInfo": "正在为您爬取更多最新新闻"}, nil	
+		}
+	case "OriginalCk": 
+		{
+			CkData := &CkReq{}
+			err := json.Unmarshal(m.Payload, CkData)
+			if err != nil {
+				return err.Error(), nil
+			}
+			resultStr := originalCk(CkData.Title, CkData.Content)
+			return resultStr, nil
 		}
 	}	
 	return

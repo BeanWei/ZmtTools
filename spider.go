@@ -548,3 +548,41 @@ func ynet() {
 
 	queues.Run(c)
 }
+
+
+
+/*====================原====创====检====测===========================*/
+
+/*文章原创度检测*/
+func originalCk(title, content string) string {
+	client := &http.Client{}
+	var postData = url.Values{}
+	postData.Add("title", title)
+	postData.Add("content", content)
+	data := postData.Encode()
+	log.Println(data)
+	req, err := http.NewRequest(
+		"POST",
+		"http://120.35.10.209:10099/Keyword/checkoriginal",
+		strings.NewReader(data))
+	req.Header.Add("Accept", "application/json, text/javascript, */*; q=0.01")
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Add("Origin", "http://www.myleguan.com")
+	req.Header.Add("Referer", "http://www.myleguan.com/lgEditor/lgEditor.html")
+	req.Header.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36")
+
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Println(err.Error())
+		return err.Error()
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Println(err.Error())
+		return err.Error()
+	}
+
+	return string(body)
+}
