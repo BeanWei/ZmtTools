@@ -311,6 +311,12 @@ var check bool
 // tencent 腾讯新闻 TODO: 暂时只分析了娱乐版块
 func tencent() {
 
+	err := storage.Init()
+	if err != nil {
+		log.Fatal("DB init Failed")
+	}
+	//defer storage.Close()
+
 	c := colly.NewCollector()
 	extensions.RandomUserAgent(c)
 
@@ -351,6 +357,12 @@ func tencent() {
 
 // zaker zaker新闻所有版块第一页36个数据
 func zaker() {
+
+	err := storage.Init()
+	if err != nil {
+		log.Fatal("DB init Failed")
+	}
+	//defer storage.Close()
 
 	baseurl := "http://app.myzaker.com/index.php?app_id="
 
@@ -418,6 +430,12 @@ func zaker() {
 // jxnews 头条新闻，来自江西的一个新闻聚合站点，爬取每个领域的前一百条新闻
 func jxnews() {
 
+	err := storage.Init()
+	if err != nil {
+		log.Fatal("DB init Failed")
+	}
+	//defer storage.Close()
+
 	baseurl := "http://toutiao.jxnews.com.cn/m/channelnewslist.php?pagesize=100&cate="
 
 	c := colly.NewCollector()
@@ -473,6 +491,12 @@ func jxnews() {
 
 // ynet 北青网，爬取各个领域前1000条新闻
 func ynet() {
+
+	err := storage.Init()
+	if err != nil {
+		log.Fatal("DB init Failed")
+	}
+	//defer storage.Close()
 
 	baseurl := "http://m.ynet.com/data/getlistinfo/"
 

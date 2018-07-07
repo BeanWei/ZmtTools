@@ -72,6 +72,11 @@ func handleMessages(a *astilectron.Astilectron, _ *astilectron.Window, m bootstr
 			if err != nil {
 				return err.Error(), nil
 			}
+			err = storage.Init()
+			if err != nil {
+				astilog.Debugf("DB init Failed")
+			}
+			//defer storage.Close()
 			payload, err = storage.Newsquery(field)
 			if err != nil {
 				return err.Error(), nil
@@ -80,6 +85,11 @@ func handleMessages(a *astilectron.Astilectron, _ *astilectron.Window, m bootstr
 		}
 	case "Domains":
 		{
+			err := storage.Init()
+			if err != nil {
+				astilog.Debugf("DB init Failed")
+			}
+			//defer storage.Close()
 			payload, err = storage.Domains()
 			if err != nil {
 				return err.Error(), nil
@@ -88,8 +98,14 @@ func handleMessages(a *astilectron.Astilectron, _ *astilectron.Window, m bootstr
 		}
 	case "ClearOldNews":
 		{
-			// err := storage.ClearOldNews()
+			// err := storage.Init()
 			// if err != nil {
+			// 	astilog.Debugf("DB init Failed")
+			// }
+			// //defer storage.Close()
+			// err = storage.ClearOldNews()
+			// if err != nil {
+			// 	astilog.Error(err)
 			// 	return map[string]string{"infotype": "error", "alertInfo": "清理历史新闻失败"}, nil
 			// }
 			// return map[string]string{"infotype": "success", "alertInfo": "已为您成功清理历史新闻"}, nil

@@ -16,6 +16,7 @@ const News = () => import('../components/News.vue')
 const IDspider = () => import('../components/IDspider')
 const Baowen  = () => import('../components/Baowen.vue')
 const Editor = () => import('../components/Editor.vue')
+const About = () => import('../components/About.vue')
 
 
 Vue.use(Router)
@@ -68,6 +69,12 @@ export default new Router({
           path:'editor/',
           name: 'Editor',
           component: Editor,
+          meta: {keepAlive: true}
+        },
+        {
+          path:'about/',
+          name: 'About',
+          component: About,
           meta: {keepAlive: true}
         }
       ]
