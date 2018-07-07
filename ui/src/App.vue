@@ -24,4 +24,11 @@
   color: #2c3e50;
   /* margin-top: 60px; */
 }
+.fade-out-enter-active, .fade-out-leave-active {
+    transition: all .5s
+}
+.fade-out-enter, .fade-out-leave-active {
+    opacity: 0;
+    transform: translateX(-400px);
+}
 </style>
