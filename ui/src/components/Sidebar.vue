@@ -65,7 +65,7 @@ export default {
         { title: '定向获取', icon: 'pets', color: 'blue-grey', itemVue: 'IDspider' },
         { title: '批量上传', icon: 'cloud_upload', color: 'teal', itemVue: 'Upload' },
         { title: '伪原创', icon: 'create', color: 'green', itemVue: 'Editor' },
-        { title: '关于', icon: 'free_breakfast', color: 'deep-orange', itemVue: 'Login' }
+        { title: '关于', icon: 'free_breakfast', color: 'deep-orange', itemVue: 'About' }
       ],
     }
   },

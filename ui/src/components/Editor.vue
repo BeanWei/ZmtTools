@@ -13,14 +13,14 @@
     </v-layout>
     <v-layout row>
       <v-flex xs12 sm12>
+        <quill-editor v-model="content"
+          ref="textEditor"
+          :options="editorOption"
+          @blur="onEditorBlur($event)"
+          @focus="onEditorFocus($event)"
+          @ready="onEditorReady($event)">
+        </quill-editor>
         <v-card style="margin-top: 12px;">
-          <div id="toolbar"></div>
-          <div id="content">
-            <p>请输入内容</p>
-          </div>
-          <!-- <div id="editorElem" style="text-align:left">
-            <p>欢迎使用富文本编辑器</p>
-          </div> -->
           <v-speed-dial
             v-model="fab"
             bottom
@@ -72,8 +72,15 @@
 </template>
 
 <script>
-import WangEditor from 'wangeditor'
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+import { quillEditor } from 'vue-quill-editor'
+
 export default {
+  components: {
+    quillEditor
+  },
   data() {
     return{
       fab: false,
@@ -82,69 +89,57 @@ export default {
       titlerules: {
         required: value => !!value || '标题不能为空.',
         counter: value => value.length <= 50 || '标题限制50字',
-      }
-    }
-  },
-  mounted() {
-    var editor = new WangEditor('#toolbar', '#content')
-    editor.customConfig.onchange = (html) => {
-      this.editorContent = html
-      editor.customConfig.uploadImgServer = '' 
-      editor.customConfig.uploadFileName = '' 
-      editor.customConfig.uploadImgHeaders = { 
-        'Accept': '*/*', 'Authorization':'Bearer ' + 'token'  //头部token 
-      }
-      editor.customConfig.menus = [ //菜单配置 
-        'head', 
-        'list', // 列表 
-        'justify', // 对齐方式 
-        'bold', 
-        'fontSize', // 字号 
-        'italic', 
-        'underline', 
-        'image', // 插入图片 
-        'foreColor', // 文字颜色 
-        'undo', // 撤销 
-        'redo', // 重复 
-      ]
-
-      editor.customConfig.uploadImgHooks = {
-        before: function (xhr, editor, files) {
-
-        },
-        success: function (xhr, editor, result) {
-          this.imgUrl = Object.values(result.data).toString()
-        },
-        fail: function (xhr, editor, result) {
-
-        },
-        error: function (xhr, editor) {
-
-        },
-        customInsert: function (insertImg, result, editor) {
-          let url = Object.values(result.data)
-          JSON.stringify(url)
-          insertImg(url)
+      },
+      editorOption: {
+        //theme: 'bubble',
+        placeholder: "*欢迎使用*",
+        modules: {
+          toolbar: [
+            ['bold', 'italic', 'underline', 'strike'],
+            ['blockquote', 'code-block'],
+            [{ 'header': 1 }, { 'header': 2 }],
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+            [{ 'script': 'sub' }, { 'script': 'super' }],
+            [{ 'indent': '-1' }, { 'indent': '+1' }],
+            [{ 'direction': 'rtl' }],
+            [{ 'size': ['small', false, 'large', 'huge'] }],
+            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+            [{ 'font': [] }],
+            [{ 'color': [] }, { 'background': [] }],
+            [{ 'align': [] }],
+            ['clean'],
+            ['link', 'image', 'video']
+          ],
         }
       }
     }
-    editor.create()
   },
   methods: {
-    // getEditorContent() {
-    //   this.editorContent = this.editor.$txt.html()
-    // }
-  }
+    onEditorBlur(editor) {
+      console.log('editor blur!', editor)
+    },
+    onEditorFocus(editor) {
+      console.log('editor focus!', editor)
+    },
+    onEditorReady(editor) {
+      console.log('editor ready!', editor)
+    },
+    onEditorChange({ editor, html, text }) {
+      console.log('editor change!', editor, html, text)
+      this.content = html
+    }
+  },
+  computed: {
+    editor() {
+      return this.$refs.textEditor.quill
+    }
+  },
 }
 </script>
 
 <style scoped>
-  #toolbar {
-    border: 1px solid #ccc;
-  }
-  #content {
-    border: 1px solid #ccc;
-    height: 600px;
-    min-height: 450px;
-  }
+.quill-editor {
+  height: 450px;
+  margin-top: 12px;
+}
 </style>

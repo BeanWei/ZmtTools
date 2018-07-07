@@ -35,6 +35,18 @@
         >
           {{alertInfo}}
         </v-alert>
+        <v-dialog
+          v-model="dialog"
+          hide-overlay
+          persistent
+          width="600"
+        >
+          <v-progress-circular
+            :size="150"
+            color="primary"
+            indeterminate
+          ></v-progress-circular>
+        </v-dialog>
         <v-container fluid grid-list-md>
           <v-layout row wrap>
             <v-flex xs12 sm7 style="margin-top: -32px;">
@@ -159,6 +171,7 @@ export default {
       allitems: [],
       newslist: [],
       hotnewslist: [],
+      dialog: true,
       fab: false,
       alert: false,
       type: 'success',
@@ -291,6 +304,7 @@ export default {
   },
   created() { 
     this.refHotNews()
+    this.dialog = false
     var item = "热点"
     this.changeItem(item)
   }
