@@ -135,7 +135,9 @@ func handleMessages(a *astilectron.Astilectron, _ *astilectron.Window, m bootstr
 			if err != nil {
 				return err.Error(), nil
 			}
-			resultStr := originalCk(CkData.Title, CkData.Content)
+			title := CkData.Title
+			content := CkData.Content
+			resultStr := originalCk(title, content)
 			return resultStr, nil
 		}
 	}	

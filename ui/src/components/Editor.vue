@@ -23,7 +23,8 @@
     <v-dialog v-model="checkResult" width="600px">
       <v-card>
         <v-card-title>
-          <span class="headline">今日头条相似度{{ttscore}}，百家号相似度{{bjscore}}，其他平台相似度{{otscore}}</span>
+          <span class="headline">总相似度{{totalscore}}：今日头条相似度{{ttscore}}，百家号相似度{{bjscore}}，其他平台相似度{{otscore}}</span><br>
+          <p style="color: red;">{{checkTips}}</p>
         </v-card-title>
         <v-list>
           <v-subheader><v-icon color="teal">vpn_key</v-icon><strong>相似文章</strong></v-subheader>
@@ -31,11 +32,13 @@
             <v-list-tile avatar @click="seeout(post.url)">
               <v-list-tile-content>
                 <v-list-tile-title>
-                  {{index+1}}.{{post.title}}&nbsp;&nbsp;&nbsp;
-                  <v-icon small>alternate_email</v-icon>
+                  {{index+1}}.{{post.title}}
+                </v-list-tile-title>
+                <v-list-tile-sub-title>
+                  <v-icon small>graphic_eq</v-icon>
                   {{post.medianame}}&nbsp;&nbsp;&nbsp;
                   相似度：{{post.score}}
-                </v-list-tile-title>
+                </v-list-tile-sub-title>
               </v-list-tile-content>
             </v-list-tile>
           </template>
@@ -44,10 +47,12 @@
             <v-list-tile avatar>
               <v-list-tile-content>
                 <v-list-tile-title>
-                  {{index+1}}.{{kw.section}}&nbsp;&nbsp;&nbsp;
-                  <v-icon small>alternate_email</v-icon>
-                  相似度：{{post.score}}
+                  {{index+1}}.{{kw.section}}
                 </v-list-tile-title>
+                <v-list-tile-sub-title>
+                  <v-icon small>graphic_eq</v-icon>
+                  相似度：{{kw.score}}
+                </v-list-tile-sub-title>
               </v-list-tile-content>
             </v-list-tile>
           </template>
@@ -193,6 +198,8 @@ export default {
         placeholder: "*欢迎使用*",
       },
       checkResult: false,
+      checkTips: '',
+      totalscore: '0.00%',
       ttscore: '0.00%',
       bjscore: '0.00%',
       otscore: '0.00%',
@@ -225,56 +232,82 @@ export default {
           "title": this.title,
           "content": this.content
         }
-        const getResult = []
+        var getObj = {}
         astilectron.sendMessage({
           name: "OriginalCk",
           payload: ckpost
         }, function(message){
-          getResult.push(message.payload) 
+          const thepayload = JSON.parse(message.payload)
+          Reflect.ownKeys(thepayload).forEach(function(key){
+            getObj[key] = thepayload[key]
+          })
         })
-        console.log(getResult)
-        const getObj = getResult[0]
-        console.log(getObj)
-        if (getObj.result === "0000") {
+        setTimeout(() => {
+          console.log(getObj) 
+          if (getObj.result === "0000") {
           var acticlesresult = getObj.acticlesresult
           var sectionresult = getObj.sectionresult
           var mediaobj = getObj.mediaobj
+          var samescore = getObj.ycpercent
           for (var aidx in acticlesresult) {
             var samepostObj = {}
             samepostObj.url = acticlesresult[aidx].link
-            samepostObj.title = acticlesresult[aidx].url
+            samepostObj.title = acticlesresult[aidx].title
             samepostObj.medianame = acticlesresult[aidx].medianame
             samepostObj.score = acticlesresult[aidx].score
             this.samepost.push(samepostObj)
           }
+          console.log(this.samepost)
           for (var sidx in sectionresult) {
             var keywordsObj = {}
             keywordsObj.section = sectionresult[sidx].section
             keywordsObj.score = sectionresult[sidx].score
             this.keywords.push(keywordsObj)
           }
-          for (var midx in mediaobj) {
-            if (mediaobj[midx].title === "头条号") {
-              this.ttscore = mediaobj[midx].score
-            } else if (mediaobj[midx].title === "百家号") {
-              this.bjscore = mediaobj[midx].score
-            } else if (mediaobj[midx].title === "综合") {
-              this.otscore = mediaobj[midx].score
-            } 
-          }
-          console.log(this.samepost)
           console.log(this.keywords)
+          for (var midx in mediaobj) {
+            var temp = {}
+            temp.title = mediaobj[midx].title
+            temp.score = mediaobj[midx].score
+            switch(temp.title){
+            case "总相似度":
+              this.totalscore = temp.score;
+              break;
+            case "头条号":
+              this.ttscore = temp.score;
+              break;
+            case "综合":
+              this.otscore = temp.score;	
+              break;
+            case "百家号":
+              this.bjscore = temp.score;		
+              break;
+            }
+          }      
+          console.log(temp) 
+          console.log(this.totalscore, this.ttscore, this.otscore, this.bjscore)
+          if(samescore <=40){
+            this.checkTips = "相似度很低，属于原创文章，可以发布";
+          }else if(samescore <=50 && samescore > 40){
+            this.checkTips = "相似度较低，基本属于原创文章，可以发布";
+          }else if(samescore <=60 && samescore > 50){
+            this.checkTips = "相似度比较高，建议修改后再发布";
+          }else if(samescore > 60){
+            this.checkTips = "相似度非常高，不建议发布";
+          }     
+          console.log(this.checkTips)  
           this.loading = false
           this.checkResult = true
-        } else {
-          this.loading = false
-          this.type = "error"
-          this.alertInfo = "抱歉！文章原创度检测失败，请稍后再试"
-          this.alert = true
-          setTimeout(() => {
-            this.alert = false
-          }, 2000)
-        }
+          } else {
+            this.loading = false
+            this.type = "error"
+            this.alertInfo = "抱歉！文章原创度检测失败，请稍后再试"
+            this.alert = true
+            setTimeout(() => {
+              this.alert = false
+            }, 2000)
+          }
+        }, 50000) 
       } else {
         this.type = "error"
         this.alertInfo = "标题和内容不能为空"
@@ -283,6 +316,12 @@ export default {
           this.alert = false
         }, 2000)
       }
+    },
+    seeout(url) {
+      astilectron.sendMessage({
+        name:"Urlwindow",
+        payload: url
+      }, function(message){})
     }
   },
   computed: {
