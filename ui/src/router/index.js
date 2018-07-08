@@ -10,6 +10,7 @@ import Router from 'vue-router'
 // import Editor from '../components/Editor.vue'
 //懒加载
 const Main = () => import('../components/Main')
+const Home = () => import('../components/Home')
 const Login = () => import('../components/Login')
 const Upload = () => import('../components/Upload')
 const News = () => import('../components/News.vue')
@@ -41,6 +42,12 @@ export default new Router({
       component: Main,
       meta: {keepAlive: true},
       children:[
+        {
+          path:'home/',
+          name: 'Home',
+          component: Home,
+          meta: {keepAlive: true}
+        },
         {
           path:'upload/',
           name: 'Upload',

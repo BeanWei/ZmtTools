@@ -59,7 +59,7 @@ export default {
         marginLeft: '-200px'
       },
       items: [
-        { title: '主页', icon: 'home', color: 'light-blue', itemVue: 'Main' },
+        { title: '主页', icon: 'home', color: 'light-blue', itemVue: 'Home' },
         { title: '十万爆文', icon: 'attach_money', color: 'amber', itemVue: 'Baowen' },
         { title: '新闻头条', icon: 'whatshot', color: 'red', itemVue: 'News' },
         { title: '定向获取', icon: 'pets', color: 'blue-grey', itemVue: 'IDspider' },
